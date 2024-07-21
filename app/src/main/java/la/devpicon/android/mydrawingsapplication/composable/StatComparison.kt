@@ -1,12 +1,19 @@
 package la.devpicon.android.mydrawingsapplication.composable
 
 import android.content.res.Configuration
+import androidx.compose.animation.core.AnimationState
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.animateTo
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -22,6 +29,26 @@ fun StatComparison(
     modifier: Modifier = Modifier
 ) {
 
+    val dividerColor = if(isSystemInDarkTheme()){
+        Color.White
+    } else {
+        Color.Gray
+    }
+
+    val animationPercentage = remember {
+        AnimationState(0F)
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        animationPercentage.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(
+                durationMillis = 1000,
+                easing = FastOutLinearInEasing
+            )
+        )
+    }
+
     Canvas(modifier = modifier
         .fillMaxWidth()
         .height(48.dp)
@@ -30,14 +57,14 @@ fun StatComparison(
         val totalValue = blueTeamValue + redTeamValue
         val blueTeamPercentage = blueTeamValue.toFloat() / totalValue
         val dividingPoint = size.width.times(blueTeamPercentage)
-        val lineWidth = 2.dp.toPx()
+        val lineWidth = 4.dp.toPx()
 
         // Draw blue line from start to dividing point
-        drawBlueLine(midHeight, dividingPoint, lineWidth)
+        drawBlueLine(midHeight, dividingPoint, lineWidth, animationPercentage.value)
         // Draw red line from start to ending point
-        drawRedLine(dividingPoint, midHeight, lineWidth)
+        drawRedLine(dividingPoint, midHeight, lineWidth, animationPercentage.value)
 
-        drawDivider(lineWidth, dividingPoint, midHeight)
+        drawDivider(lineWidth, dividingPoint, midHeight, dividerColor)
 
 
     }
@@ -46,12 +73,13 @@ fun StatComparison(
 private fun DrawScope.drawDivider(
     lineWidth: Float,
     dividingPoint: Float,
-    midHeight: Float
+    midHeight: Float,
+    dividerColor: Color
 ) {
     val dividerOffsetPx = lineWidth.times(2)
     
     drawLine(
-        color = Color.Gray,
+        color = dividerColor,
         start = Offset(
             x = dividingPoint,
             y = midHeight - dividerOffsetPx
@@ -67,8 +95,14 @@ private fun DrawScope.drawDivider(
 private fun DrawScope.drawRedLine(
     dividingPoint: Float,
     midHeight: Float,
-    lineWidth: Float
+    lineWidth: Float,
+    animationPercentage: Float
 ) {
+
+val totalLength = (size.width - dividingPoint)
+    val lengthToRender = totalLength * animationPercentage
+    val endingX = dividingPoint + lengthToRender
+
     drawLine(
         color = Color.Red,
         start = Offset(
@@ -76,7 +110,7 @@ private fun DrawScope.drawRedLine(
             y = midHeight
         ),
         end = Offset(
-            x = size.width,
+            x = endingX,
             y = midHeight
         ),
         strokeWidth = lineWidth
@@ -86,12 +120,18 @@ private fun DrawScope.drawRedLine(
 private fun DrawScope.drawBlueLine(
     midHeight: Float,
     dividingPoint: Float,
-    lineWidth: Float
+    lineWidth: Float,
+    animationPercentage: Float
 ) {
+
+    val totalLength = dividingPoint
+    val lineLengthToRender = animationPercentage * totalLength
+    val startingX = (dividingPoint - lineLengthToRender)
+
     drawLine(
         color = Color.Blue,
         start = Offset(
-            x = 0f,
+            x = startingX,
             y = midHeight
         ),
         end = Offset(
@@ -116,7 +156,7 @@ private fun StatComparisonPreview() {
         Surface {
             StatComparison(
                 blueTeamValue = 5,
-                redTeamValue = 3,
+                redTeamValue = 23,
                 modifier = Modifier
                     .padding(16.dp)
             )
