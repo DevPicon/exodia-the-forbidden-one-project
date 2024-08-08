@@ -10,10 +10,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.TextMeasurer
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import la.devpicon.android.mydrawingsapplication.ui.theme.MyDrawingsApplicationTheme
 
 private const val TOTAL_ANGLE = 360f
@@ -32,46 +39,106 @@ fun DoughnutChart(
     val sweepAngleA: Float = TOTAL_ANGLE.times(percentageA).times(-1) // Counter clockwise
     val sweepAngleB: Float = TOTAL_ANGLE.times(percentageB) // clockwise
 
+    val percentageValueA = percentageA.times(100).toInt()
+    val percentageValueB = percentageB.times(100).toInt()
+
+    val percentageTextA = "$percentageValueA%"
+    val percentageTextB = "$percentageValueB%"
+
+    val textMeasurer = rememberTextMeasurer()
+
     Canvas(
         modifier = modifier
             .size(chartSize)
     ) {
-
-        // arc style
-        val arcStyle = Stroke(
-            width = strokeWidth.toPx()
-        )
-        // top left position (offset)
-        val topLeft = Offset(
-            x = 0f + strokeWidth.toPx() / 2,
-            y = 0f + strokeWidth.toPx() / 2
-        )
-        // arc size
-        val arcSize = Size(
-            width = size.width - strokeWidth.toPx(),
-            height = size.height - strokeWidth.toPx()
-        )
-        // draw arc
-        drawArc(
-            color = chartColorA,
-            startAngle = initialAngle,
-            sweepAngle = sweepAngleA,
-            useCenter = false,
-            topLeft = topLeft,
-            size = arcSize,
-            style = arcStyle
-        )
-        drawArc(
-            color = chartColorB,
-            startAngle = initialAngle,
-            sweepAngle = sweepAngleB,
-            useCenter = false,
-            topLeft = topLeft,
-            size = arcSize,
-            style = arcStyle
-        )
-
+        drawArcs(strokeWidth, chartColorA, initialAngle, sweepAngleA, chartColorB, sweepAngleB)
+        drawTexts(chartColorA, textMeasurer, percentageTextB, percentageTextA)
     }
+}
+
+private fun DrawScope.drawTexts(
+    chartColorA: Color,
+    textMeasurer: TextMeasurer,
+    percentageTextB: String,
+    percentageTextA: String
+) {
+    // text style
+    val textStyle = TextStyle(
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold,
+        color = chartColorA.copy(alpha = 1f)
+    )
+    // top-left (offset)
+    val topLeftA = Offset(
+        x = 0f,
+        y = 0f
+    )
+
+    val textLayoutResult = textMeasurer.measure(
+        text = percentageTextB,
+        style = textStyle
+    )
+
+    val topLeftB = Offset(
+        x = size.width - textLayoutResult.size.width,
+        y = 0f
+    )
+    // draw text
+    drawText(
+        text = percentageTextA,
+        textMeasurer = textMeasurer,
+        topLeft = topLeftA,
+        style = textStyle
+    )
+    drawText(
+        text = percentageTextB,
+        textMeasurer = textMeasurer,
+        topLeft = topLeftB,
+        style = textStyle
+    )
+}
+
+private fun DrawScope.drawArcs(
+    strokeWidth: Dp,
+    chartColorA: Color,
+    initialAngle: Float,
+    sweepAngleA: Float,
+    chartColorB: Color,
+    sweepAngleB: Float
+) {
+    // arc style
+    val arcStyle = Stroke(
+        width = strokeWidth.toPx()
+    )
+    // top left position (offset)
+    val topLeft = Offset(
+        x = 0f + strokeWidth.toPx() / 2,
+        y = 0f + strokeWidth.toPx() / 2
+    )
+    // arc size
+    val arcSize = Size(
+        width = size.width - strokeWidth.toPx(),
+        height = size.height - strokeWidth.toPx()
+    )
+    // draw arc
+    drawArc(
+        color = chartColorA,
+        startAngle = initialAngle,
+        sweepAngle = sweepAngleA,
+        useCenter = false,
+        topLeft = topLeft,
+        size = arcSize,
+        style = arcStyle
+    )
+    drawArc(
+        color = chartColorB,
+        startAngle = initialAngle,
+        sweepAngle = sweepAngleB,
+        useCenter = false,
+        topLeft = topLeft,
+        size = arcSize,
+        style = arcStyle
+    )
 }
 
 @Preview(
