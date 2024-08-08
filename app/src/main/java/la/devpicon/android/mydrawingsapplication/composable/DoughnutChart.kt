@@ -10,8 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
@@ -19,8 +21,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import la.devpicon.android.mydrawingsapplication.R
 import la.devpicon.android.mydrawingsapplication.ui.theme.MyDrawingsApplicationTheme
 
 private const val TOTAL_ANGLE = 360f
@@ -47,13 +52,50 @@ fun DoughnutChart(
 
     val textMeasurer = rememberTextMeasurer()
 
+    val teamLogoA = ImageBitmap.imageResource(id = R.drawable.logo_boca)
+    val teamLogoB = ImageBitmap.imageResource(id = R.drawable.logo_barcelona)
+    val imageSize = 70.dp
+
     Canvas(
         modifier = modifier
             .size(chartSize)
     ) {
         drawArcs(strokeWidth, chartColorA, initialAngle, sweepAngleA, chartColorB, sweepAngleB)
         drawTexts(chartColorA, textMeasurer, percentageTextB, percentageTextA)
+        drawImages(teamLogoA, imageSize, teamLogoB)
     }
+}
+
+private fun DrawScope.drawImages(
+    teamLogoA: ImageBitmap,
+    imageSize: Dp,
+    teamLogoB: ImageBitmap
+) {
+    drawImage(
+        image = teamLogoA,
+        dstSize = IntSize(
+            width = imageSize.roundToPx(),
+            height = imageSize.roundToPx()
+        ),
+        dstOffset = IntOffset(
+            x = (size.width.div(2).minus(imageSize.roundToPx().times(1.2))).toInt(),
+            y = (size.width.div(2).minus(imageSize.roundToPx().div(2))).toInt()
+        ),
+        alpha = 1f
+    )
+
+    drawImage(
+        image = teamLogoB,
+        dstSize = IntSize(
+            width = imageSize.roundToPx(),
+            height = imageSize.roundToPx()
+        ),
+        dstOffset = IntOffset(
+            x = ((size.width / 2) + (imageSize.roundToPx() * 0.2)).toInt(),
+            y = ((size.width / 2) - (imageSize.roundToPx() / 2)).toInt()
+        ),
+        alpha = 1f
+    )
 }
 
 private fun DrawScope.drawTexts(
