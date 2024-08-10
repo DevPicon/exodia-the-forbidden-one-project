@@ -1,11 +1,15 @@
 package la.devpicon.android.mydrawingsapplication.composable
 
 import android.content.res.Configuration
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -40,12 +44,26 @@ fun DoughnutChart(
     chartColorB: Color = Color.Blue,
     strokeWidth: Dp = 50.dp
 ) {
-    val initialAngle = 270f
-    val sweepAngleA: Float = TOTAL_ANGLE.times(percentageA).times(-1) // Counter clockwise
-    val sweepAngleB: Float = TOTAL_ANGLE.times(percentageB) // clockwise
 
-    val percentageValueA = percentageA.times(100).toInt()
-    val percentageValueB = percentageB.times(100).toInt()
+    val animationProgress = remember {
+        Animatable(initialValue = 0f)
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        animationProgress.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(
+                durationMillis = 1000
+            )
+        )
+    }
+
+    val initialAngle = 270f
+    val sweepAngleA: Float = TOTAL_ANGLE.times(percentageA.times(animationProgress.value)).times(-1) // Counter clockwise
+    val sweepAngleB: Float = TOTAL_ANGLE.times(percentageB.times(animationProgress.value)) // clockwise
+
+    val percentageValueA = percentageA.times(100.times(animationProgress.value)).toInt()
+    val percentageValueB = percentageB.times(100.times(animationProgress.value)).toInt()
 
     val percentageTextA = "$percentageValueA%"
     val percentageTextB = "$percentageValueB%"
@@ -61,15 +79,16 @@ fun DoughnutChart(
             .size(chartSize)
     ) {
         drawArcs(strokeWidth, chartColorA, initialAngle, sweepAngleA, chartColorB, sweepAngleB)
-        drawTexts(chartColorA, textMeasurer, percentageTextB, percentageTextA)
-        drawImages(teamLogoA, imageSize, teamLogoB)
+        drawTexts(chartColorA, textMeasurer, percentageTextB, percentageTextA, animationProgress.value)
+        drawImages(teamLogoA, imageSize, teamLogoB, animationProgress.value)
     }
 }
 
 private fun DrawScope.drawImages(
     teamLogoA: ImageBitmap,
     imageSize: Dp,
-    teamLogoB: ImageBitmap
+    teamLogoB: ImageBitmap,
+    alpha: Float
 ) {
     drawImage(
         image = teamLogoA,
@@ -81,7 +100,7 @@ private fun DrawScope.drawImages(
             x = (size.width.div(2).minus(imageSize.roundToPx().times(1.2))).toInt(),
             y = (size.width.div(2).minus(imageSize.roundToPx().div(2))).toInt()
         ),
-        alpha = 1f
+        alpha = alpha
     )
 
     drawImage(
@@ -94,7 +113,7 @@ private fun DrawScope.drawImages(
             x = ((size.width / 2) + (imageSize.roundToPx() * 0.2)).toInt(),
             y = ((size.width / 2) - (imageSize.roundToPx() / 2)).toInt()
         ),
-        alpha = 1f
+        alpha = alpha
     )
 }
 
@@ -102,13 +121,14 @@ private fun DrawScope.drawTexts(
     chartColorA: Color,
     textMeasurer: TextMeasurer,
     percentageTextB: String,
-    percentageTextA: String
+    percentageTextA: String,
+    alpha: Float
 ) {
     // text style
     val textStyle = TextStyle(
         fontSize = 20.sp,
         fontWeight = FontWeight.Bold,
-        color = chartColorA.copy(alpha = 1f)
+        color = chartColorA.copy(alpha = alpha)
     )
     // top-left (offset)
     val topLeftA = Offset(
