@@ -12,6 +12,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import la.devpicon.android.mydrawingsapplication.R
 import la.devpicon.android.mydrawingsapplication.ui.theme.MyDrawingsApplicationTheme
 
@@ -43,6 +45,23 @@ fun WorkoutPauseTimer(
         )
     }
 
+    LaunchedEffect(key1 = workoutPauseState.isPlaying) {
+        if (workoutPauseState.isPlaying) {
+            while (workoutPauseState.timeLeft > 0) {
+                delay(1000L)
+
+                workoutPauseState = workoutPauseState.copy(
+                    timeLeft = workoutPauseState.timeLeft - 1
+                )
+            }
+
+            workoutPauseState = workoutPauseState.copy(
+                isPlaying = false,
+                timeLeft = timeInSeconds
+            )
+        }
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth(),
@@ -56,14 +75,30 @@ fun WorkoutPauseTimer(
             timeLeftInSeconds = workoutPauseState.timeLeft
         )
 
-        IconButton(onClick = {}) {
+        IconButton(onClick = {
+            workoutPauseState = WorkoutPauseState.DEFAULT.copy(
+                timeLeft = timeInSeconds
+            )
+        }) {
             Icon(imageVector = Icons.Default.Clear, contentDescription = "Reset everything button")
         }
 
         PlayStopButton(
             modifier = modifier,
             isPlaying = workoutPauseState.isPlaying,
-            onPlayStop = {}
+            onPlayStop = {
+                workoutPauseState = if (workoutPauseState.isPlaying) {
+                    workoutPauseState.copy(
+                        isPlaying = false,
+                        timeLeft = timeInSeconds
+                    )
+
+                } else {
+                    workoutPauseState.copy(
+                        isPlaying = true
+                    )
+                }
+            }
         )
 
     }
