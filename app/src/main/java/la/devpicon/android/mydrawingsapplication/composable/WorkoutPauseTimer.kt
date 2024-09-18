@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,7 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextMeasurer
@@ -43,9 +47,13 @@ import la.devpicon.android.mydrawingsapplication.ui.theme.MyDrawingsApplicationT
 @Composable
 fun WorkoutPauseTimer(
     modifier: Modifier = Modifier,
-    numberOfSteps: Int = 3,
-    timeInSeconds: Int = 45,
+    numberOfSteps: Int = 5,
+    timeInSeconds: Int = 30,
 ) {
+
+    var animationProgress by remember {
+        mutableFloatStateOf(0f)
+    }
 
     var workoutPauseState by remember {
         mutableStateOf(
@@ -57,16 +65,33 @@ fun WorkoutPauseTimer(
 
     LaunchedEffect(key1 = workoutPauseState.isPlaying) {
         if (workoutPauseState.isPlaying) {
+
+            val startTimeInMillis = System.currentTimeMillis()
+
             while (workoutPauseState.timeLeft > 0) {
                 delay(1000L)
+                
+                val elapsedTimeInSeconds = (System.currentTimeMillis() - startTimeInMillis) / 1000
+                val progress = elapsedTimeInSeconds / timeInSeconds.toFloat()
 
                 workoutPauseState = workoutPauseState.copy(
                     timeLeft = workoutPauseState.timeLeft - 1
                 )
+                animationProgress = progress.coerceIn(0f, 1f)
             }
 
             workoutPauseState = workoutPauseState.copy(
                 isPlaying = false,
+                timeLeft = timeInSeconds,
+                completedBreaks = workoutPauseState.completedBreaks + 1
+            )
+            animationProgress = 0f
+        }
+    }
+
+    LaunchedEffect(workoutPauseState.completedBreaks) {
+        if(workoutPauseState.completedBreaks == numberOfSteps - 1){
+            workoutPauseState = WorkoutPauseState.DEFAULT.copy(
                 timeLeft = timeInSeconds
             )
         }
@@ -107,22 +132,31 @@ fun WorkoutPauseTimer(
                     workoutPauseState = if (workoutPauseState.isPlaying) {
                         workoutPauseState.copy(
                             isPlaying = false,
-                            timeLeft = timeInSeconds
+                            timeLeft = timeInSeconds,
+                            currentBreak = workoutPauseState.currentBreak - 1
                         )
 
                     } else {
                         workoutPauseState.copy(
-                            isPlaying = true
+                            isPlaying = true,
+                            currentBreak = workoutPauseState.currentBreak + 1,
+                            isCollapsed = false
                         )
                     }
                 }
             )
         }
 
-        Steps(
-            modifier = modifier,
-            numberOfSteps = numberOfSteps
-        )
+        if(workoutPauseState.isCollapsed.not()){
+            Steps(
+                modifier = modifier,
+                numberOfSteps = numberOfSteps,
+                currentBreak = workoutPauseState.currentBreak,
+                isPlaying = workoutPauseState.isPlaying,
+                completedBreaks = workoutPauseState.completedBreaks,
+                animationProgress = animationProgress
+            )
+        }
     }
 
 }
@@ -130,11 +164,16 @@ fun WorkoutPauseTimer(
 @Composable
 fun Steps(
     modifier: Modifier,
-    numberOfSteps: Int
+    numberOfSteps: Int,
+    currentBreak: Int,
+    isPlaying: Boolean,
+    completedBreaks: Int,
+    animationProgress: Float,
 ) {
     val textMeasurer = rememberTextMeasurer()
     val radius = 16f.dp
     val colorGray = Color(0xFFE5E5E5)
+    val colorMain = Color(0xFF55CEFF)
 
     Canvas(
         modifier = modifier
@@ -156,14 +195,33 @@ fun Steps(
         }
 
         centers.forEachIndexed { index, offset ->
-            // Gray circles
-            drawCircle(
-                color = colorGray,
-                radius = radiusInPx,
-                center = offset
-            )
+            if(currentBreak > index){
+                drawCircle(
+                    color = colorMain,
+                    radius = radiusInPx,
+                    center = offset
+                )
 
-            drawNumberInCircles(index, textMeasurer, offset)
+                drawPath(
+                    path = Path().apply {
+                        moveTo(offset.x - 16, offset.y)
+                        relativeMoveTo(-8f, -4f)
+                        relativeLineTo(16f, 16f)
+                        relativeLineTo(24f, -24f)
+                    },
+                    brush = SolidColor(Color.Black),
+                    style = Stroke(width = 2.dp.toPx())
+                )
+            } else {
+                // Gray circles
+                drawCircle(
+                    color = colorGray,
+                    radius = radiusInPx,
+                    center = offset
+                )
+
+                drawNumberInCircles(index, textMeasurer, offset)
+            }
         }
 
         // Draw lines between circles
@@ -175,6 +233,30 @@ fun Steps(
                 start = Offset(startX, y),
                 end = Offset(endX, y),
                 strokeWidth = 14f
+            )
+        }
+
+        for(i in 0 until completedBreaks){
+            val startX = centers[i].x + radiusInPx + 2f
+            val endX = centers[i + 1].x - radiusInPx - 2f
+            drawLine(
+                color = colorMain,
+                start = Offset(startX, y),
+                end = Offset(endX, y),
+                strokeWidth = 8f
+            )
+        }
+
+        if(isPlaying){
+            val startFillingX = centers[currentBreak - 1].x + radiusInPx + 2f
+            val endFillingX = centers[currentBreak].x - radiusInPx - 2f
+            val length = endFillingX - startFillingX
+            val animatedEndX = startFillingX + length.times(animationProgress)
+            drawLine(
+                color = colorMain,
+                start = Offset(startFillingX, y),
+                end = Offset(animatedEndX, y),
+                strokeWidth = 8f
             )
         }
 
@@ -243,7 +325,10 @@ fun CountdownTimer(
 
 data class WorkoutPauseState(
     val isPlaying: Boolean = false,
-    val timeLeft: Int = 45
+    val timeLeft: Int = 45,
+    val currentBreak: Int = 0,
+    val completedBreaks: Int = 0,
+    val isCollapsed: Boolean = true
 ) {
     companion object {
         val DEFAULT = WorkoutPauseState()
