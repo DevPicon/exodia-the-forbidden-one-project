@@ -1,9 +1,13 @@
 package la.devpicon.android.mydrawingsapplication.composable
 
 import android.content.res.Configuration
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -19,10 +23,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,7 +43,7 @@ import la.devpicon.android.mydrawingsapplication.ui.theme.MyDrawingsApplicationT
 @Composable
 fun WorkoutPauseTimer(
     modifier: Modifier = Modifier,
-    stepCount: Int = 3,
+    numberOfSteps: Int = 3,
     timeInSeconds: Int = 45,
 ) {
 
@@ -62,47 +72,139 @@ fun WorkoutPauseTimer(
         }
     }
 
-    Row(
+    Column(
         modifier = modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    )
-    {
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Row(
+            modifier = modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
 
-        CountdownTimer(
-            modifier = modifier,
-            timeLeftInSeconds = workoutPauseState.timeLeft
-        )
-
-        IconButton(onClick = {
-            workoutPauseState = WorkoutPauseState.DEFAULT.copy(
-                timeLeft = timeInSeconds
+            CountdownTimer(
+                modifier = modifier,
+                timeLeftInSeconds = workoutPauseState.timeLeft
             )
-        }) {
-            Icon(imageVector = Icons.Default.Clear, contentDescription = "Reset everything button")
+
+            IconButton(onClick = {
+                workoutPauseState = WorkoutPauseState.DEFAULT.copy(
+                    timeLeft = timeInSeconds
+                )
+            }) {
+                Icon(
+                    imageVector = Icons.Default.Clear,
+                    contentDescription = "Reset everything button"
+                )
+            }
+
+            PlayStopButton(
+                modifier = modifier,
+                isPlaying = workoutPauseState.isPlaying,
+                onPlayStop = {
+                    workoutPauseState = if (workoutPauseState.isPlaying) {
+                        workoutPauseState.copy(
+                            isPlaying = false,
+                            timeLeft = timeInSeconds
+                        )
+
+                    } else {
+                        workoutPauseState.copy(
+                            isPlaying = true
+                        )
+                    }
+                }
+            )
         }
 
-        PlayStopButton(
+        Steps(
             modifier = modifier,
-            isPlaying = workoutPauseState.isPlaying,
-            onPlayStop = {
-                workoutPauseState = if (workoutPauseState.isPlaying) {
-                    workoutPauseState.copy(
-                        isPlaying = false,
-                        timeLeft = timeInSeconds
-                    )
-
-                } else {
-                    workoutPauseState.copy(
-                        isPlaying = true
-                    )
-                }
-            }
+            numberOfSteps = numberOfSteps
         )
-
     }
 
+}
+
+@Composable
+fun Steps(
+    modifier: Modifier,
+    numberOfSteps: Int
+) {
+    val textMeasurer = rememberTextMeasurer()
+    val radius = 16f.dp
+    val colorGray = Color(0xFFE5E5E5)
+
+    Canvas(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(75.dp)
+    ) {
+
+        val radiusInPx = radius.toPx()
+        val y = size.height - radiusInPx
+        val totalWidth = size.width
+        val stepWidth = (totalWidth - 2 * radiusInPx) / (numberOfSteps - 1)
+
+        val centers = List(numberOfSteps) { index: Int ->
+            val x = radiusInPx + index * stepWidth
+            Offset(
+                x = x,
+                y = y
+            )
+        }
+
+        centers.forEachIndexed { index, offset ->
+            // Gray circles
+            drawCircle(
+                color = colorGray,
+                radius = radiusInPx,
+                center = offset
+            )
+
+            drawNumberInCircles(index, textMeasurer, offset)
+        }
+
+        // Draw lines between circles
+        for (i in 0 until numberOfSteps - 1) {
+            val startX = centers[i].x + radiusInPx + 2f
+            val endX = centers[i + 1].x - radiusInPx - 2f
+            drawLine(
+                color = colorGray,
+                start = Offset(startX, y),
+                end = Offset(endX, y),
+                strokeWidth = 14f
+            )
+        }
+
+    }
+}
+
+private fun DrawScope.drawNumberInCircles(
+    index: Int,
+    textMeasurer: TextMeasurer,
+    offset: Offset
+) {
+    val stepNumberText = "${index + 1}"
+    val style = TextStyle(
+        color = Color.Black,
+        fontWeight = FontWeight.Bold
+    )
+    val layoutResult = textMeasurer.measure(
+        text = stepNumberText,
+        style = style
+    )
+
+    drawText(
+        text = stepNumberText,
+        textMeasurer = textMeasurer,
+        topLeft = Offset(
+            x = offset.x - layoutResult.size.width / 2,
+            y = offset.y - layoutResult.size.height / 2
+        ),
+        style = style
+    )
 }
 
 @Composable
