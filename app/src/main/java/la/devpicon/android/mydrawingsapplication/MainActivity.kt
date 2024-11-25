@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package la.devpicon.android.mydrawingsapplication
 
@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import la.devpicon.android.mydrawingsapplication.composable.Screens
 import la.devpicon.android.mydrawingsapplication.composable.screen.BasicDrawingScreen
@@ -41,24 +42,30 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
+                        val currentDestination =
+                            navController.currentBackStackEntryAsState().value?.destination
+                        val title = when (currentDestination?.route) {
+                            Screens.Home.router -> getString(R.string.app_name)
+                            Screens.Doughnut.router -> getString(R.string.label_possesion_doughnut_chart)
+                            Screens.Workout.router -> getString(R.string.label_workout_timer)
+                            Screens.Basic.router -> getString(R.string.label_basic_sample)
+                            else -> getString(R.string.app_name)
+                        }
                         TopAppBar(
                             title = {
-                                Text(text = "My Drawings")
+                                Text(text = title)
                             },
-                            navigationIcon = {
-                                if (navController.previousBackStackEntry != null) {
-
-                                    IconButton(
-                                        onClick = {
-                                            navController.navigateUp()
-                                        }
-                                    ) {
+                            navigationIcon = if (currentDestination?.route != Screens.Home.router) {
+                                {
+                                    IconButton(onClick = { navController.navigateUp() }) {
                                         Icon(
-                                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
                                             contentDescription = "Back"
                                         )
                                     }
                                 }
+                            } else {
+                                {}
                             }
                         )
                     }
