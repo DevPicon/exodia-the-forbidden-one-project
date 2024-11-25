@@ -39,6 +39,10 @@ This Android application provides a platform for creating and exploring differen
 
 Contributions are welcome! Please feel free to open issues or submit pull requests.
 
+## Contact
+
+For questions or feedback, please get in touch with Armando at IG: [@devpicon](https://instagram.com/devpicon)
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
