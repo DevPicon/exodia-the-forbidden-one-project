@@ -1,4 +1,4 @@
-# My Drawings Application
+# My Drawing Samples Application
 
 This Android application provides a platform for creating and exploring different types of drawings and visualizations. It's built using Jetpack Compose and offers a variety of drawing tools and features.
 
