@@ -11,7 +11,7 @@ import la.devpicon.android.mydrawingsapplication.draw.WorkoutPauseTimer
 import la.devpicon.android.mydrawingsapplication.ui.theme.MyDrawingsApplicationTheme
 
 @Composable
-fun WorkoutPauseTimerScreen(modifier: Modifier = Modifier) {
+fun WorkoutTimerScreen(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -25,7 +25,7 @@ fun WorkoutPauseTimerScreen(modifier: Modifier = Modifier) {
 private fun WorkoutPauseTimerScreenPreview() {
     MyDrawingsApplicationTheme {
         Surface() {
-            WorkoutPauseTimerScreen()
+            WorkoutTimerScreen()
         }
     }
 }

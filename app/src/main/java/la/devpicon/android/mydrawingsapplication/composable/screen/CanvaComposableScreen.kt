@@ -11,7 +11,7 @@ import la.devpicon.android.mydrawingsapplication.draw.CanvasComposable
 import la.devpicon.android.mydrawingsapplication.ui.theme.MyDrawingsApplicationTheme
 
 @Composable
-fun CanvasComposableScreen(modifier: Modifier = Modifier) {
+fun BasicDrawingScreen(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -25,7 +25,7 @@ fun CanvasComposableScreen(modifier: Modifier = Modifier) {
 private fun CanvasComposableScreenPreview() {
     MyDrawingsApplicationTheme {
         Surface() {
-            CanvasComposableScreen()
+            BasicDrawingScreen()
         }
     }
 }
