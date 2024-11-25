@@ -15,7 +15,7 @@ This Android application provides a platform for creating and exploring differen
 
 ## Getting Started
 
-1. **Clone the repository:** `git clone https://github.com/your-username/MyDrawingsApplication.git`
+1. **Clone the repository:** `git clone [https://github.com/DevPicon/exodia-the-forbidden-one-project.git](https://github.com/DevPicon/exodia-the-forbidden-one-project.git)`
 2. **Open in Android Studio:** Open the project in Android Studio.
 3. **Build and run:** Build the project and run it on an emulator or physical device.
 
