@@ -1,4 +1,4 @@
-package la.devpicon.android.mydrawingsapplication.composable
+package la.devpicon.android.mydrawingsapplication.composable.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,7 +15,12 @@ import androidx.compose.ui.unit.dp
 import la.devpicon.android.mydrawingsapplication.ui.theme.MyDrawingsApplicationTheme
 
 @Composable
-fun Menu(modifier: Modifier = Modifier) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    onNavigateToDoughnutChartScreen: () -> Unit,
+    onNavigateToWorkoutPauseScreen: () -> Unit,
+    onNavigateToBasicDrawScreen: () -> Unit,
+) {
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -26,21 +31,21 @@ fun Menu(modifier: Modifier = Modifier) {
             .padding(horizontal = 48.dp)
 
         Button(
-            onClick = {},
+            onClick = onNavigateToBasicDrawScreen,
             modifier = buttonModifier
         ) {
             Text("Ejemplo básico")
         }
 
         Button(
-            onClick = {},
+            onClick = onNavigateToDoughnutChartScreen,
             modifier = buttonModifier
         ) {
             Text("Gráfico de posesión en Android")
         }
 
         Button(
-            onClick = {},
+            onClick = onNavigateToWorkoutPauseScreen,
             modifier = buttonModifier
         ) {
             Text("Temporizador interactivo")
@@ -59,6 +64,11 @@ fun Menu(modifier: Modifier = Modifier) {
 @Composable
 private fun MenuPreview() {
     MyDrawingsApplicationTheme {
-        Menu()
+        HomeScreen(
+            onNavigateToDoughnutChartScreen = {},
+            modifier = Modifier,
+            onNavigateToWorkoutPauseScreen = {},
+            onNavigateToBasicDrawScreen = {}
+        )
     }
 }
