@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ejemplos de dibujos</string>
+    <string name="label_basic_sample">Ejemplo básico</string>
+    <string name="label_possesion_doughnut_chart">Gráfico de posesión en Android</string>
+    <string name="label_workout_timer">Temporizador interactivo</string>
+</resources>

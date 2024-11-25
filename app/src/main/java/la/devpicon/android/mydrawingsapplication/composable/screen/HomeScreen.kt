@@ -10,8 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import la.devpicon.android.mydrawingsapplication.R
 import la.devpicon.android.mydrawingsapplication.ui.theme.MyDrawingsApplicationTheme
 
 @Composable
@@ -34,21 +36,21 @@ fun HomeScreen(
             onClick = onNavigateToBasicDrawScreen,
             modifier = buttonModifier
         ) {
-            Text("Ejemplo básico")
+            Text(stringResource(R.string.label_basic_sample))
         }
 
         Button(
             onClick = onNavigateToDoughnutChartScreen,
             modifier = buttonModifier
         ) {
-            Text("Gráfico de posesión en Android")
+            Text(stringResource(R.string.label_possesion_doughnut_chart))
         }
 
         Button(
             onClick = onNavigateToWorkoutPauseScreen,
             modifier = buttonModifier
         ) {
-            Text("Temporizador interactivo")
+            Text(stringResource(R.string.label_workout_timer))
         }
 
         Button(
