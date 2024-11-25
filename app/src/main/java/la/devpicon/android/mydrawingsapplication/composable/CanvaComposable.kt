@@ -27,8 +27,15 @@ fun CanvasComposable(
 
     val text = "Hola Android"
     val textMeasurer = rememberTextMeasurer()
+
+    val style = TextStyle(
+        fontSize = 30.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color.Blue
+    )
+
     val textLayoutResult = remember(text) {
-        textMeasurer.measure(text)
+        textMeasurer.measure(text, style = style)
     }
 
     Canvas(
@@ -57,14 +64,10 @@ fun CanvasComposable(
             text = text,
             textMeasurer = textMeasurer,
             topLeft = Offset(
-                x = width / 2 - textLayoutResult.size.width,
+                x = width / 2 - textLayoutResult.size.width / 2,
                 y = height / 2 - textLayoutResult.size.height
             ),
-            style = TextStyle(
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Blue
-            )
+            style = style
         )
 
     }
