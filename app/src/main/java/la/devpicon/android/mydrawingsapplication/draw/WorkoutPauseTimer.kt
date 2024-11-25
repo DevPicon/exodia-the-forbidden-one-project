@@ -1,4 +1,4 @@
-package la.devpicon.android.mydrawingsapplication.composable
+package la.devpicon.android.mydrawingsapplication.draw
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Canvas

@@ -1,4 +1,4 @@
-package la.devpicon.android.mydrawingsapplication.composable
+package la.devpicon.android.mydrawingsapplication.draw
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box

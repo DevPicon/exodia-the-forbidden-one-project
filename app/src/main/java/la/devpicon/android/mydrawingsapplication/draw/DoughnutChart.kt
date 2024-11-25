@@ -1,4 +1,4 @@
-package la.devpicon.android.mydrawingsapplication.composable
+package la.devpicon.android.mydrawingsapplication.draw
 
 import android.content.res.Configuration
 import androidx.compose.animation.core.Animatable
@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import la.devpicon.android.mydrawingsapplication.R
 import la.devpicon.android.mydrawingsapplication.ui.theme.MyDrawingsApplicationTheme
+import kotlin.math.roundToInt
 
 private const val TOTAL_ANGLE = 360f
 
@@ -62,8 +63,8 @@ fun DoughnutChart(
     val sweepAngleA: Float = TOTAL_ANGLE.times(percentageA.times(animationProgress.value)).times(-1) // Counter clockwise
     val sweepAngleB: Float = TOTAL_ANGLE.times(percentageB.times(animationProgress.value)) // clockwise
 
-    val percentageValueA = percentageA.times(100.times(animationProgress.value)).toInt()
-    val percentageValueB = percentageB.times(100.times(animationProgress.value)).toInt()
+    val percentageValueA = percentageA.times(100.times(animationProgress.value)).roundToInt()
+    val percentageValueB = percentageB.times(100.times(animationProgress.value)).roundToInt()
 
     val percentageTextA = "$percentageValueA%"
     val percentageTextB = "$percentageValueB%"
