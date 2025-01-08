@@ -3,4 +3,6 @@
     <string name="label_basic_sample">Basic drawing</string>
     <string name="label_possesion_doughnut_chart">Doughtnut chart - Ball possesion</string>
     <string name="label_workout_timer">Workout timer</string>
+    <string name="label_pixel_art" translatable="false">Pixel Art</string>
+    <string name="label_fireworks_2025">Fireworks for 2025</string>
 </resources>

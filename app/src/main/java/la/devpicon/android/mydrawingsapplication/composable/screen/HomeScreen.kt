@@ -22,6 +22,8 @@ fun HomeScreen(
     onNavigateToDoughnutChartScreen: () -> Unit,
     onNavigateToWorkoutPauseScreen: () -> Unit,
     onNavigateToBasicDrawScreen: () -> Unit,
+    onNavigateToPixelArtScreen: () -> Unit,
+    onNavigateToFireworks2025: () -> Unit,
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -54,10 +56,17 @@ fun HomeScreen(
         }
 
         Button(
-            onClick = {},
+            onClick = onNavigateToPixelArtScreen,
             modifier = buttonModifier
         ) {
-            Text("Linea de comparación")
+            Text(stringResource(R.string.label_pixel_art))
+        }
+
+        Button(
+            onClick = onNavigateToFireworks2025,
+            modifier = buttonModifier
+        ) {
+            Text(stringResource(R.string.label_fireworks_2025))
         }
     }
 }
@@ -70,7 +79,9 @@ private fun MenuPreview() {
             onNavigateToDoughnutChartScreen = {},
             modifier = Modifier,
             onNavigateToWorkoutPauseScreen = {},
-            onNavigateToBasicDrawScreen = {}
+            onNavigateToBasicDrawScreen = {},
+            onNavigateToPixelArtScreen = {},
+            onNavigateToFireworks2025 = {}
         )
     }
 }

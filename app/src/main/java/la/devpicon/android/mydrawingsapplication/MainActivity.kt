@@ -26,7 +26,9 @@ import androidx.navigation.compose.rememberNavController
 import la.devpicon.android.mydrawingsapplication.composable.Screens
 import la.devpicon.android.mydrawingsapplication.composable.screen.BasicDrawingScreen
 import la.devpicon.android.mydrawingsapplication.composable.screen.DoughnutChartScreen
+import la.devpicon.android.mydrawingsapplication.composable.screen.FireworksScreen
 import la.devpicon.android.mydrawingsapplication.composable.screen.HomeScreen
+import la.devpicon.android.mydrawingsapplication.composable.screen.PixelArtScreen
 import la.devpicon.android.mydrawingsapplication.composable.screen.WorkoutTimerScreen
 import la.devpicon.android.mydrawingsapplication.ui.theme.MyDrawingsApplicationTheme
 
@@ -49,6 +51,7 @@ class MainActivity : ComponentActivity() {
                             Screens.Doughnut.router -> getString(R.string.label_possesion_doughnut_chart)
                             Screens.Workout.router -> getString(R.string.label_workout_timer)
                             Screens.Basic.router -> getString(R.string.label_basic_sample)
+                            Screens.PixelArt.router -> getString(R.string.label_pixel_art)
                             else -> getString(R.string.app_name)
                         }
                         TopAppBar(
@@ -96,6 +99,12 @@ class MainActivity : ComponentActivity() {
                     },
                     onNavigateToBasicDrawScreen = {
                         navController.navigate(Screens.Basic.router)
+                    },
+                    onNavigateToPixelArtScreen = {
+                        navController.navigate(Screens.PixelArt.router)
+                    },
+                    onNavigateToFireworks2025 = {
+                        navController.navigate(Screens.Fireworks2025.router)
                     }
                 )
             }
@@ -107,6 +116,12 @@ class MainActivity : ComponentActivity() {
             }
             composable(route = Screens.Basic.router) {
                 BasicDrawingScreen()
+            }
+            composable(route = Screens.PixelArt.router) {
+                PixelArtScreen()
+            }
+            composable(route = Screens.Fireworks2025.router) {
+                FireworksScreen()
             }
         }
     }
