@@ -7,6 +7,7 @@ This Android application provides a platform for creating and exploring differen
 * **Basic Drawing:** A canvas where users can draw freely with different colors and brush sizes.
 * **Doughnut Chart:** Create and customize doughnut charts to visualize data.
 * **Workout Timer:** A timer with pause/resume functionality, potentially for workout tracking.
+* **Scratch Card:** Reveal composable content by clearing an isolated Canvas overlay with touch gestures.
 * **Navigation:** Easy navigation between different screens using Jetpack Compose Navigation.
 
 ## Screenshots

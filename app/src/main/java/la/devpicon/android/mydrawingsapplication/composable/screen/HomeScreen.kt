@@ -22,6 +22,7 @@ fun HomeScreen(
     onNavigateToDoughnutChartScreen: () -> Unit,
     onNavigateToWorkoutPauseScreen: () -> Unit,
     onNavigateToBasicDrawScreen: () -> Unit,
+    onNavigateToScratchCardScreen: () -> Unit,
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -54,6 +55,13 @@ fun HomeScreen(
         }
 
         Button(
+            onClick = onNavigateToScratchCardScreen,
+            modifier = buttonModifier
+        ) {
+            Text(stringResource(R.string.label_scratch_card))
+        }
+
+        Button(
             onClick = {},
             modifier = buttonModifier
         ) {
@@ -70,7 +78,8 @@ private fun MenuPreview() {
             onNavigateToDoughnutChartScreen = {},
             modifier = Modifier,
             onNavigateToWorkoutPauseScreen = {},
-            onNavigateToBasicDrawScreen = {}
+            onNavigateToBasicDrawScreen = {},
+            onNavigateToScratchCardScreen = {}
         )
     }
 }
