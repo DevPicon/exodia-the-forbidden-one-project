@@ -6,7 +6,7 @@ This file is the single source of truth for delivery status in **Jetpack Compose
 
 | ID | Priority | Status | Story | Completion evidence |
 |---|---|---|---|---|
-| PROD-001 | P0 | IN_PROGRESS | Align the product identity and public documentation | — |
+| PROD-001 | P0 | COMPLETED | Align the product identity and public documentation | `c200507` |
 | DRAW-004 | P0 | READY | Make the stat-comparison sample discoverable | — |
 | DRAW-005 | P0 | COMPLETED | Add the scratch-card overlay sample | `de7aca4` |
 | DRAW-003 | P1 | READY | Make the workout timer behavior reliable | — |
@@ -21,7 +21,7 @@ This inventory describes the current repository; it does not override story stat
 
 | Sample | Current state | Known gap |
 |---|---|---|
-| Basic Canvas | Reachable | README currently overstates its capabilities; it renders a fixed shape and text. |
+| Basic Canvas | Reachable | Focused UI tests and Canvas semantics remain pending. |
 | Doughnut Chart | Reachable and interactive | Fixed sizing and Canvas accessibility require follow-up. |
 | Workout Timer | Reachable and interactive | Pause/resume, lifecycle restoration, and focused tests require correction. |
 | Stat Comparison | Implemented | Not reachable because its Home action is inert. |
@@ -32,7 +32,8 @@ This inventory describes the current repository; it does not override story stat
 ### PROD-001 — Align the product identity and public documentation
 
 - **Priority:** P0
-- **Status:** IN_PROGRESS
+- **Status:** COMPLETED
+- **Implementation commit:** `c200507`
 
 #### Definition
 
@@ -57,6 +58,13 @@ As a developer exploring Jetpack Compose graphics, I want the app and repository
 1. Build the debug application and verify the launcher/app title.
 2. Review README claims against every reachable sample.
 3. Verify English and Spanish app names where localized.
+
+#### Completion evidence
+
+- Unit tests, lint, debug assembly, and Android-test compilation passed.
+- APK inspection confirmed the product label for default and Spanish resources.
+- APK inspection confirmed that `la.devpicon.android.mydrawingsapplication` remained unchanged.
+- Public documentation and product identity were committed in `c200507`.
 
 ### DRAW-004 — Make the stat-comparison sample discoverable
 
@@ -240,3 +248,4 @@ As a maintainer, I want dependencies, SDK configuration, and resources to remain
 | Date | Story | Implementation commit | Ledger update |
 |---|---|---|---|
 | 2026-08-06 | DRAW-005 | `de7aca4` | Recorded during governance consolidation. |
+| 2026-08-06 | PROD-001 | `c200507` | Product identity and public documentation aligned. |
