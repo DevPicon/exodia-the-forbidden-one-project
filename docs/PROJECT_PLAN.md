@@ -7,7 +7,7 @@ This file is the single source of truth for delivery status in **Jetpack Compose
 | ID | Priority | Status | Story | Completion evidence |
 |---|---|---|---|---|
 | PROD-001 | P0 | COMPLETED | Align the product identity and public documentation | `c200507` |
-| DRAW-004 | P0 | IN_PROGRESS | Make the stat-comparison sample discoverable | — |
+| DRAW-004 | P0 | COMPLETED | Make the stat-comparison sample discoverable | `c6321c6` |
 | DRAW-005 | P0 | COMPLETED | Add the scratch-card overlay sample | `de7aca4` |
 | DRAW-003 | P1 | READY | Make the workout timer behavior reliable | — |
 | QUALITY-001 | P1 | READY | Enforce build, tests, and lint in CI | — |
@@ -69,7 +69,8 @@ As a developer exploring Jetpack Compose graphics, I want the app and repository
 ### DRAW-004 — Make the stat-comparison sample discoverable
 
 - **Priority:** P0
-- **Status:** IN_PROGRESS
+- **Status:** COMPLETED
+- **Implementation commit:** `c6321c6`
 
 #### Definition
 
@@ -96,6 +97,15 @@ As a developer using the sample catalog, I want to open the stat-comparison visu
 2. Change both team values and verify the visualization updates.
 3. Exercise zero-total and invalid-value behavior.
 4. Navigate back to Home.
+
+#### Completion evidence
+
+- The Home action, localized screen title, value controls, and back navigation are available.
+- Five unit tests passed, including proportion, zero-total, overflow, and negative-input coverage.
+- All eight instrumented tests passed on the Android 16 `Medium_Phone_API_36.1` emulator.
+- `lintDebug`, `assembleDebug`, and Android-test compilation passed.
+- Espresso was updated to `3.7.0` to support input injection on Android 16.
+- The implementation and tests were committed in `c6321c6`.
 
 ### DRAW-005 — Add the scratch-card overlay sample
 
@@ -249,3 +259,4 @@ As a maintainer, I want dependencies, SDK configuration, and resources to remain
 |---|---|---|---|
 | 2026-08-06 | DRAW-005 | `de7aca4` | Recorded during governance consolidation. |
 | 2026-08-06 | PROD-001 | `c200507` | Product identity and public documentation aligned. |
+| 2026-08-06 | DRAW-004 | `c6321c6` | Stat-comparison sample verified and made discoverable. |
