@@ -10,6 +10,7 @@ This file is the single source of truth for delivery status in **Jetpack Compose
 | DRAW-004 | P0 | COMPLETED | Make the stat-comparison sample discoverable | `c6321c6` |
 | DRAW-005 | P0 | COMPLETED | Add the scratch-card overlay sample | `de7aca4` |
 | DRAW-003 | P1 | COMPLETED | Make the workout timer behavior reliable | `0dd4d0f` |
+| QUALITY-002 | P1 | IN_PROGRESS | Enforce local Kotlin quality checks before commit | — |
 | QUALITY-001 | P1 | READY | Enforce build, tests, and lint in CI | — |
 | UX-001 | P1 | BACKLOG | Make samples adaptive across screen configurations | — |
 | A11Y-001 | P1 | BACKLOG | Add meaningful semantics to Canvas samples | — |
@@ -172,6 +173,39 @@ As a developer studying time-based Compose drawing, I want the timer sample to i
 - `lintDebug`, `assembleDebug`, and Android-test compilation passed.
 - A later optional `installDebug` attempt was blocked by insufficient AVD storage; connected test execution had already passed.
 - The implementation and tests were committed in `0dd4d0f`.
+
+### QUALITY-002 — Enforce local Kotlin quality checks before commit
+
+- **Priority:** P1
+- **Status:** IN_PROGRESS
+
+#### Definition
+
+As a contributor, I want Detekt and ktlint to run through a versioned Lefthook pre-commit hook so that Kotlin quality regressions are rejected before a commit is created.
+
+#### Scope
+
+- Add reproducible Gradle tasks for Detekt and ktlint checks.
+- Add a versioned `lefthook.yml` pre-commit configuration.
+- Install Lefthook locally without committing generated `.git/hooks` files.
+- Document hook installation, manual checks, and formatting commands.
+- Preserve existing source debt through explicit baselines if correcting it would broaden this story.
+
+#### Acceptance criteria
+
+- `./gradlew detekt ktlintCheck` succeeds on the accepted baseline.
+- `lefthook run pre-commit` executes both checks and succeeds on compliant code.
+- A deliberate Kotlin violation makes the pre-commit hook fail.
+- The hook never modifies staged files automatically.
+- A fresh clone has documented commands to install and run the hook.
+
+#### Test cases
+
+1. Run Detekt and ktlint directly through Gradle.
+2. Install the hook and inspect the generated `pre-commit` entry.
+3. Run the pre-commit hook against the current repository.
+4. Introduce a temporary violation, verify rejection, and remove the probe.
+5. Run the default project verification set after integrating the plugins.
 
 ### QUALITY-001 — Enforce build, tests, and lint in CI
 

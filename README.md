@@ -40,13 +40,20 @@ Every new sample should be independently navigable, reusable, localized in Engli
    cd exodia-the-forbidden-one-project
    ```
 
-2. Open the project in Android Studio and run the `app` configuration, or build the debug APK from the terminal:
+2. Install Lefthook and activate the versioned pre-commit hook:
+
+   ```shell
+   brew install lefthook
+   lefthook install
+   ```
+
+3. Open the project in Android Studio and run the `app` configuration, or build the debug APK from the terminal:
 
    ```shell
    ./gradlew assembleDebug
    ```
 
-3. With an authorized Android device connected, install the debug build:
+4. With an authorized Android device connected, install the debug build:
 
    ```shell
    ./gradlew installDebug
@@ -59,7 +66,10 @@ Run the default project checks with:
 ```shell
 ./gradlew testDebugUnitTest lintDebug assembleDebug
 ./gradlew compileDebugAndroidTestKotlin
+./gradlew detekt ktlintCheck
 ```
+
+The pre-commit hook runs `detekt` and `ktlintCheck` without changing files. To apply ktlint formatting intentionally, run `./gradlew ktlintFormat`, review the changes, and commit them normally. You can execute the hook manually with `lefthook run pre-commit`.
 
 When an authorized device or emulator is available, run the Compose UI tests with:
 

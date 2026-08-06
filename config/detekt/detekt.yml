@@ -1,0 +1,14 @@
+naming:
+  FunctionNaming:
+    ignoreAnnotated:
+      - Composable
+
+style:
+  UnusedPrivateMember:
+    ignoreAnnotated:
+      - Preview
+
+complexity:
+  TooManyFunctions:
+    ignoreAnnotatedFunctions:
+      - Preview

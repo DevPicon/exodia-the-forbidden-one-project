@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>LongMethod:ScratchCard.kt$@Composable fun ScratchCard( modifier: Modifier = Modifier, overlayColor: Color = Color(0xFFC0C0C0), strokeWidth: Dp = 60.dp, content: @Composable BoxScope.() -&gt; Unit )</ID>
+    <ID>LongParameterList:DoughnutChart.kt$( modifier: Modifier = Modifier, chartSize: Dp = 350.dp, percentageA: Float = 0.5f, percentageB: Float = 0.5f, chartColorA: Color = Color.Red, chartColorB: Color = Color.Blue, strokeWidth: Dp = 50.dp )</ID>
+    <ID>LongParameterList:DoughnutChart.kt$( strokeWidth: Dp, chartColorA: Color, initialAngle: Float, sweepAngleA: Float, chartColorB: Color, sweepAngleB: Float )</ID>
+    <ID>MagicNumber:Color.kt$0xFF625b71</ID>
+    <ID>MagicNumber:Color.kt$0xFF6650a4</ID>
+    <ID>MagicNumber:Color.kt$0xFF7D5260</ID>
+    <ID>MagicNumber:Color.kt$0xFFCCC2DC</ID>
+    <ID>MagicNumber:Color.kt$0xFFD0BCFF</ID>
+    <ID>MagicNumber:Color.kt$0xFFEFB8C8</ID>
+    <ID>MagicNumber:DoughnutChart.kt$1.2</ID>
+    <ID>MagicNumber:DoughnutChart.kt$270f</ID>
+    <ID>MagicNumber:DoughnutChartScreen.kt$0.5f</ID>
+    <ID>MagicNumber:DoughnutChartScreen.kt$100</ID>
+    <ID>MagicNumber:ScratchCard.kt$0xFFC0C0C0</ID>
+    <ID>MagicNumber:ScratchCardScreen.kt$0xFFFFD700</ID>
+    <ID>MagicNumber:StatComparisonScreen.kt$50</ID>
+    <ID>MagicNumber:WorkoutPauseTimer.kt$0.1f</ID>
+    <ID>MagicNumber:WorkoutPauseTimer.kt$0.45f</ID>
+    <ID>MagicNumber:WorkoutPauseTimer.kt$0.4f</ID>
+    <ID>MagicNumber:WorkoutPauseTimer.kt$0.5f</ID>
+    <ID>MagicNumber:WorkoutPauseTimer.kt$0.6f</ID>
+    <ID>MagicNumber:WorkoutPauseTimer.kt$0xFF55CEFF</ID>
+    <ID>MagicNumber:WorkoutPauseTimer.kt$0xFFE5E5E5</ID>
+    <ID>MagicNumber:WorkoutPauseTimer.kt$60</ID>
+    <ID>MatchingDeclarationName:HomeScreen.kt$HomeActions</ID>
+    <ID>MaxLineLength:DoughnutChart.kt$val sweepAngleA: Float = TOTAL_ANGLE.times(percentageA.times(animationProgress.value)).times(-1) // Counter clockwise</ID>
+    <ID>NewLineAtEndOfFile:CanvaComposable.kt$la.devpicon.android.mydrawingsapplication.draw.CanvaComposable.kt</ID>
+    <ID>NewLineAtEndOfFile:CanvaComposableScreen.kt$la.devpicon.android.mydrawingsapplication.composable.screen.CanvaComposableScreen.kt</ID>
+    <ID>NewLineAtEndOfFile:Color.kt$la.devpicon.android.mydrawingsapplication.ui.theme.Color.kt</ID>
+    <ID>NewLineAtEndOfFile:DoughnutChart.kt$la.devpicon.android.mydrawingsapplication.draw.DoughnutChart.kt</ID>
+    <ID>NewLineAtEndOfFile:DoughnutChartScreen.kt$la.devpicon.android.mydrawingsapplication.composable.screen.DoughnutChartScreen.kt</ID>
+    <ID>NewLineAtEndOfFile:ExampleUnitTest.kt$la.devpicon.android.mydrawingsapplication.ExampleUnitTest.kt</ID>
+    <ID>NewLineAtEndOfFile:Theme.kt$la.devpicon.android.mydrawingsapplication.ui.theme.Theme.kt</ID>
+    <ID>NewLineAtEndOfFile:Type.kt$la.devpicon.android.mydrawingsapplication.ui.theme.Type.kt</ID>
+    <ID>UnusedParameter:CanvaComposable.kt$modifier: Modifier = Modifier</ID>
+    <ID>WildcardImport:ExampleUnitTest.kt$import org.junit.Assert.*</ID>
+  </CurrentIssues>
+</SmellBaseline>

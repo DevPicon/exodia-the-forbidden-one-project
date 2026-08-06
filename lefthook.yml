@@ -1,0 +1,5 @@
+pre-commit:
+  jobs:
+    - name: Kotlin quality
+      run: ./gradlew detekt ktlintCheck
+      fail_text: Kotlin quality checks failed. Fix new issues before committing.
