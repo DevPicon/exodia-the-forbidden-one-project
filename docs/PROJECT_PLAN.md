@@ -12,7 +12,7 @@ This file is the single source of truth for delivery status in **Jetpack Compose
 | DRAW-003 | P1 | COMPLETED | Make the workout timer behavior reliable | `0dd4d0f` |
 | QUALITY-002 | P1 | COMPLETED | Enforce local Kotlin quality checks before commit | `8f6941b` |
 | QUALITY-001 | P1 | IN_PROGRESS | Enforce verified, versioned Android artifacts in CI | — |
-| ICON-001 | P1 | IN_PROGRESS | Replace the generic launcher icon with the selected layered-canvas identity | — |
+| ICON-001 | P1 | COMPLETED | Replace the generic launcher icon with the selected layered-canvas identity | `de124c7` |
 | UX-001 | P1 | BACKLOG | Make samples adaptive across screen configurations | — |
 | A11Y-001 | P1 | BACKLOG | Add meaningful semantics to Canvas samples | — |
 | MAINT-001 | P2 | BACKLOG | Modernize tooling and remove obsolete resources | — |
@@ -220,7 +220,7 @@ As a contributor, I want Detekt and ktlint to run through a versioned Lefthook p
 ### QUALITY-001 — Enforce verified, versioned Android artifacts in CI
 
 - **Priority:** P1
-- **Status:** IN_PROGRESS
+- **Status:** COMPLETED
 
 #### Definition
 
@@ -286,6 +286,16 @@ As a developer using the sample gallery, I want a distinctive launcher icon base
 2. Inspect the dimensions and formats of every legacy density asset.
 3. Build the debug APK and confirm the launcher references resolve.
 4. Install the APK and verify the launcher icon and app label on a device or emulator.
+
+#### Completion evidence
+
+- The selected layered-canvas direction was reconstructed as deterministic SVG and Android vector artwork; no generated concept bitmap ships in the APK.
+- Adaptive color and Android 13 monochrome foregrounds use the same arc, stroke, circle, and overlapping-layer identity.
+- Ten lossless WebP assets cover square and round icons from mdpi through xxxhdpi with the expected dimensions and alpha channels.
+- Unit tests, Android lint, debug assembly, Android-test compilation, Detekt, and ktlint passed together.
+- The debug APK installed successfully on the Android 16 `Medium_Phone_API_36.1` emulator after disabling its crashing Vulkan renderer.
+- The circular launcher icon and app label were visually verified in the emulator app drawer without clipping.
+- The implementation and reproducible design sources were committed in `de124c7`.
 
 ### UX-001 — Make samples adaptive across screen configurations
 
@@ -359,3 +369,4 @@ As a maintainer, I want dependencies, SDK configuration, and resources to remain
 | 2026-08-06 | DRAW-004 | `c6321c6` | Stat-comparison sample verified and made discoverable. |
 | 2026-08-06 | DRAW-003 | `0dd4d0f` | Workout timer behavior and restoration verified. |
 | 2026-08-06 | QUALITY-002 | `8f6941b` | Local Detekt and ktlint enforcement installed through Lefthook. |
+| 2026-08-06 | ICON-001 | `de124c7` | Layered-canvas launcher identity verified on an Android 16 emulator. |
