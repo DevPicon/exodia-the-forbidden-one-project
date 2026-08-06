@@ -5,6 +5,17 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
+val appVersionName = "1.0"
+val localBuildNumber = 1
+val requestedBuildNumber = providers.gradleProperty("buildNumber").orNull
+val appBuildNumber =
+    requestedBuildNumber?.toIntOrNull()?.takeIf { it > 0 }
+        ?: if (requestedBuildNumber == null) {
+            localBuildNumber
+        } else {
+            error("Gradle property 'buildNumber' must be a positive integer, but was '$requestedBuildNumber'.")
+        }
+
 android {
     namespace = "la.devpicon.android.mydrawingsapplication"
     compileSdk = 34
@@ -13,8 +24,8 @@ android {
         applicationId = "la.devpicon.android.mydrawingsapplication"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = appBuildNumber
+        versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -48,6 +59,14 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+}
+
+tasks.register("printVersionName") {
+    group = "versioning"
+    description = "Prints the intentional Android version name for artifact metadata."
+    doLast {
+        println(appVersionName)
     }
 }
 

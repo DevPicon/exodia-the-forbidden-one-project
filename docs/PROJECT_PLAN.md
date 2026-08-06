@@ -11,7 +11,7 @@ This file is the single source of truth for delivery status in **Jetpack Compose
 | DRAW-005 | P0 | COMPLETED | Add the scratch-card overlay sample | `de7aca4` |
 | DRAW-003 | P1 | COMPLETED | Make the workout timer behavior reliable | `0dd4d0f` |
 | QUALITY-002 | P1 | COMPLETED | Enforce local Kotlin quality checks before commit | `8f6941b` |
-| QUALITY-001 | P1 | READY | Enforce build, tests, and lint in CI | — |
+| QUALITY-001 | P1 | IN_PROGRESS | Enforce verified, versioned Android artifacts in CI | — |
 | UX-001 | P1 | BACKLOG | Make samples adaptive across screen configurations | — |
 | A11Y-001 | P1 | BACKLOG | Add meaningful semantics to Canvas samples | — |
 | MAINT-001 | P2 | BACKLOG | Modernize tooling and remove obsolete resources | — |
@@ -216,33 +216,42 @@ As a contributor, I want Detekt and ktlint to run through a versioned Lefthook p
 - Unit tests, Android lint, debug assembly, Android-test compilation, Detekt, and ktlint all passed together.
 - The implementation and verification configuration were committed in `8f6941b`.
 
-### QUALITY-001 — Enforce build, tests, and lint in CI
+### QUALITY-001 — Enforce verified, versioned Android artifacts in CI
 
 - **Priority:** P1
-- **Status:** READY
+- **Status:** IN_PROGRESS
 
 #### Definition
 
-As a maintainer, I want every proposed change to compile and run automated quality checks so that broken samples do not reach `stable`.
+As a maintainer, I want every proposed change to compile and run automated quality checks, and every accepted `stable` build to publish an identifiable APK, so that broken or ambiguous artifacts do not reach consumers.
 
 #### Scope
 
 - Run unit tests, lint, and debug assembly in GitHub Actions.
-- Trigger checks for pull requests and pushes to `stable`.
-- Keep the debug APK artifact.
+- Run Detekt, ktlint, and Android-test compilation in the same verification job.
+- Trigger checks for pull requests, pushes to `stable`, and manual runs.
+- Keep `versionName` as an intentional project value.
+- Accept an optional positive Gradle `buildNumber` property as Android `versionCode`, with a deterministic local fallback.
+- Use GitHub's monotonically increasing workflow run number as the build number for CI artifacts.
+- Upload a debug APK only for accepted pushes or manual runs on `stable`, named with its version and build number.
 - Ensure step names describe the commands they actually run.
 
 #### Acceptance criteria
 
-- CI fails when unit tests, lint, or compilation fail.
+- CI fails when unit tests, lint, static analysis, or compilation fail.
 - Pull requests receive the same checks as `stable` pushes.
-- The APK artifact is uploaded only after successful verification.
+- A missing, non-numeric, zero, or negative CI build number cannot silently produce a mislabeled APK.
+- The generated APK embeds the configured `versionName` and CI build number as `versionCode`.
+- The APK artifact is uploaded only after successful verification on `stable`; pull requests never publish it.
+- The artifact name identifies both the manual version and automatic build number.
 
 #### Test cases
 
-1. Run the workflow successfully on the current baseline.
-2. Confirm a deliberately failing test causes the job to fail before merging that test.
-3. Confirm the debug APK artifact is available on success.
+1. Run the full workflow command locally with a representative positive `buildNumber`.
+2. Inspect the resulting APK and confirm its embedded version name and code.
+3. Pass invalid build-number values and verify Gradle rejects them.
+4. Validate the workflow syntax and event/upload conditions.
+5. Push the committed workflow to `stable`, wait for GitHub Actions, and verify the named APK artifact is available after all checks pass.
 
 ### UX-001 — Make samples adaptive across screen configurations
 

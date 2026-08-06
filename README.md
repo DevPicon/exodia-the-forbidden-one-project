@@ -71,6 +71,12 @@ Run the default project checks with:
 
 The pre-commit hook runs `detekt` and `ktlintCheck` without changing files. To apply ktlint formatting intentionally, run `./gradlew ktlintFormat`, review the changes, and commit them normally. You can execute the hook manually with `lefthook run pre-commit`.
 
+### Versioned CI artifacts
+
+The Android `versionName` is an intentional project value updated in `app/build.gradle.kts`. Local builds use a deterministic fallback `versionCode`; CI passes GitHub's workflow run number through `-PbuildNumber` so every published APK embeds its automatic build number.
+
+Pull requests run the complete verification set without publishing. Successful pushes and manual workflow runs on `stable` upload a debug APK named `jetpack-compose-custom-drawing-samples-<version>-build-<number>`, retained by GitHub Actions for 30 days. These installable debug artifacts are development snapshots, not signed production releases.
+
 When an authorized device or emulator is available, run the Compose UI tests with:
 
 ```shell
