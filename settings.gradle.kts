@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "My Drawings Application"
+rootProject.name = "Jetpack Compose Custom Drawing Samples"
 include(":app")

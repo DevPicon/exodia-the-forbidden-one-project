@@ -1,51 +1,89 @@
-# My Drawing Samples Application
+# Jetpack Compose Custom Drawing Samples
 
-This Android application provides a platform for creating and exploring different types of drawings and visualizations. It's built using Jetpack Compose and offers a variety of drawing tools and features.
+An Android sample gallery for experimenting with custom drawing, animation, gestures, and visualizations in Jetpack Compose.
 
-## Features
+The repository is a technical playground and reference application. Each sample isolates a drawing technique behind a small, navigable demonstration instead of building a general-purpose drawing product.
 
-* **Basic Drawing:** A canvas where users can draw freely with different colors and brush sizes.
-* **Doughnut Chart:** Create and customize doughnut charts to visualize data.
-* **Workout Timer:** A timer with pause/resume functionality, potentially for workout tracking.
-* **Scratch Card:** Reveal composable content by clearing an isolated Canvas overlay with touch gestures.
-* **Navigation:** Easy navigation between different screens using Jetpack Compose Navigation.
+## Sample catalog
 
-## Screenshots
+| Sample | What it demonstrates | Current state |
+|---|---|---|
+| Basic Canvas | `Canvas`, `drawRect`, and `drawText` with a fixed shape and label | Available |
+| Doughnut Chart | Animated arcs, measured text, bitmap placement, and an interactive percentage slider | Available |
+| Workout Timer | Countdown-driven Canvas progress and step rendering | Available; behavior corrections tracked in `DRAW-003` |
+| Scratch Card | Gesture-driven paths and `BlendMode.Clear` on an isolated graphics layer | Available |
+| Stat Comparison | Animated proportional lines and a divider | Implemented; catalog navigation tracked in `DRAW-004` |
 
-| Home                            | Basic sample                     | Doughtnut chart                      | Workout timer                           |
-|---------------------------------|----------------------------------|--------------------------------------|-----------------------------------------|
-| ![image](/screenshots/home.png) | ![image](/screenshots/basic.png) | ![image](/screenshots/doughtnut.png) | ![image](/screenshots/workouttimer.png) |
+Delivery status, acceptance criteria, and pending work live exclusively in the [project plan](docs/PROJECT_PLAN.md).
 
-## Getting Started
+## Project rules
 
-1. **Clone the repository:** `git clone https://github.com/DevPicon/exodia-the-forbidden-one-project.git`
-2. **Open in Android Studio:** Open the project in Android Studio.
-3. **Build and run:** Build the project and run it on an emulator or physical device.
+- [GOVERNANCE.md](GOVERNANCE.md) defines the product boundaries, sample contract, Definition of Done, verification policy, and commit workflow.
+- [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md) is the source of truth for stories, tasks, priorities, status, and completion evidence.
 
-## Technologies Used
+Every new sample should be independently navigable, reusable, localized in English and Spanish, previewable, tested around its primary behavior, and documented with its relevant rendering constraints.
 
-* **Jetpack Compose:** For building the UI.
-* **Kotlin:** The primary programming language.
-* **Android SDK:** The core Android development kit.
-* **Navigation Component:** For in-app navigation.
-* **(Other relevant libraries or tools)**
+## Getting started
 
-## Future Enhancements
+### Requirements
 
-* **More drawing tools:** Add more advanced drawing tools and features.
-* **Chart customization:** Enhance the customization options for doughnut charts.
-* **Data persistence:** Implement data persistence to save drawings and chart data.
-* **User authentication:** Add user authentication for personalized experiences.
-* **(Other potential features you plan to add)**
+- Android Studio with Android SDK 34 installed.
+- JDK 17.
+- An Android device or emulator running API 24 or newer.
+
+### Build and run
+
+1. Clone the repository:
+
+   ```shell
+   git clone https://github.com/DevPicon/exodia-the-forbidden-one-project.git
+   cd exodia-the-forbidden-one-project
+   ```
+
+2. Open the project in Android Studio and run the `app` configuration, or build the debug APK from the terminal:
+
+   ```shell
+   ./gradlew assembleDebug
+   ```
+
+3. With an authorized Android device connected, install the debug build:
+
+   ```shell
+   ./gradlew installDebug
+   ```
+
+## Verification
+
+Run the default project checks with:
+
+```shell
+./gradlew testDebugUnitTest lintDebug assembleDebug
+./gradlew compileDebugAndroidTestKotlin
+```
+
+When an authorized device or emulator is available, run the Compose UI tests with:
+
+```shell
+./gradlew connectedDebugAndroidTest
+```
+
+## Project structure
+
+- `app/src/main/java/.../draw/`: reusable drawing and visualization composables.
+- `app/src/main/java/.../composable/screen/`: navigable demonstration screens.
+- `app/src/androidTest/`: Compose UI and Android integration tests.
+- `docs/PROJECT_PLAN.md`: delivery ledger and completion evidence.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to open issues or submit pull requests.
+Before implementation:
+
+1. Select or define a story in the project plan.
+2. Confirm its scope, acceptance criteria, and test cases.
+3. Move it to `IN_PROGRESS`.
+
+A code story is marked `COMPLETED` only after its implementation has been committed and the ledger records that commit hash.
 
 ## Contact
 
-For questions or feedback, please get in touch with Armando at IG: [@devpicon](https://instagram.com/devpicon)
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
+For questions, contact Armando on Instagram at [@devpicon](https://instagram.com/devpicon).

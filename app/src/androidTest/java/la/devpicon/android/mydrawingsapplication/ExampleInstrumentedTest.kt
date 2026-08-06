@@ -21,4 +21,15 @@ class ExampleInstrumentedTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("la.devpicon.android.mydrawingsapplication", appContext.packageName)
     }
+
+    @Test
+    fun appLabel_matchesProductName() {
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val applicationInfo = appContext.applicationInfo
+
+        assertEquals(
+            "Jetpack Compose Custom Drawing Samples",
+            appContext.packageManager.getApplicationLabel(applicationInfo).toString()
+        )
+    }
 }

@@ -6,7 +6,7 @@ This file is the single source of truth for delivery status in **Jetpack Compose
 
 | ID | Priority | Status | Story | Completion evidence |
 |---|---|---|---|---|
-| PROD-001 | P0 | READY | Align the product identity and public documentation | — |
+| PROD-001 | P0 | IN_PROGRESS | Align the product identity and public documentation | — |
 | DRAW-004 | P0 | READY | Make the stat-comparison sample discoverable | — |
 | DRAW-005 | P0 | COMPLETED | Add the scratch-card overlay sample | `de7aca4` |
 | DRAW-003 | P1 | READY | Make the workout timer behavior reliable | — |
@@ -32,7 +32,7 @@ This inventory describes the current repository; it does not override story stat
 ### PROD-001 — Align the product identity and public documentation
 
 - **Priority:** P0
-- **Status:** READY
+- **Status:** IN_PROGRESS
 
 #### Definition
 
