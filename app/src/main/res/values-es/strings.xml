@@ -8,4 +8,9 @@
     <string name="scratch_card_instruction">Raspa la capa plateada para revelar el contenido oculto</string>
     <string name="scratch_card_prize">🎉 ¡GANASTE UN PREMIO! 🎉</string>
     <string name="scratch_card_reset">Raspar de nuevo</string>
+    <string name="label_stat_comparison">Comparación de valores</string>
+    <string name="stat_comparison_instruction">Ajusta ambos valores para comparar sus proporciones</string>
+    <string name="stat_comparison_blue_value">Equipo azul: %1$d</string>
+    <string name="stat_comparison_red_value">Equipo rojo: %1$d</string>
+    <string name="stat_comparison_empty_values">Define al menos un valor mayor que cero para dibujar una proporción</string>
 </resources>

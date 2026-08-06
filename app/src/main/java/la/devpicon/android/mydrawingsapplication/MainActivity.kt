@@ -26,8 +26,10 @@ import androidx.navigation.compose.rememberNavController
 import la.devpicon.android.mydrawingsapplication.composable.Screens
 import la.devpicon.android.mydrawingsapplication.composable.screen.BasicDrawingScreen
 import la.devpicon.android.mydrawingsapplication.composable.screen.DoughnutChartScreen
+import la.devpicon.android.mydrawingsapplication.composable.screen.HomeActions
 import la.devpicon.android.mydrawingsapplication.composable.screen.HomeScreen
 import la.devpicon.android.mydrawingsapplication.composable.screen.ScratchCardScreen
+import la.devpicon.android.mydrawingsapplication.composable.screen.StatComparisonScreen
 import la.devpicon.android.mydrawingsapplication.composable.screen.WorkoutTimerScreen
 import la.devpicon.android.mydrawingsapplication.ui.theme.MyDrawingsApplicationTheme
 
@@ -51,6 +53,7 @@ class MainActivity : ComponentActivity() {
                             Screens.Workout.router -> getString(R.string.label_workout_timer)
                             Screens.Basic.router -> getString(R.string.label_basic_sample)
                             Screens.ScratchCard.router -> getString(R.string.label_scratch_card)
+                            Screens.StatComparison.router -> getString(R.string.label_stat_comparison)
                             else -> getString(R.string.app_name)
                         }
                         TopAppBar(
@@ -90,18 +93,23 @@ class MainActivity : ComponentActivity() {
         ) {
             composable(route = Screens.Home.router) {
                 HomeScreen(
-                    onNavigateToDoughnutChartScreen = {
-                        navController.navigate(Screens.Doughnut.router)
-                    },
-                    onNavigateToWorkoutPauseScreen = {
-                        navController.navigate(Screens.Workout.router)
-                    },
-                    onNavigateToBasicDrawScreen = {
-                        navController.navigate(Screens.Basic.router)
-                    },
-                    onNavigateToScratchCardScreen = {
-                        navController.navigate(Screens.ScratchCard.router)
-                    }
+                    actions = HomeActions(
+                        onOpenBasicDrawing = {
+                            navController.navigate(Screens.Basic.router)
+                        },
+                        onOpenDoughnutChart = {
+                            navController.navigate(Screens.Doughnut.router)
+                        },
+                        onOpenWorkoutTimer = {
+                            navController.navigate(Screens.Workout.router)
+                        },
+                        onOpenScratchCard = {
+                            navController.navigate(Screens.ScratchCard.router)
+                        },
+                        onOpenStatComparison = {
+                            navController.navigate(Screens.StatComparison.router)
+                        }
+                    )
                 )
             }
             composable(route = Screens.Doughnut.router) {
@@ -115,6 +123,9 @@ class MainActivity : ComponentActivity() {
             }
             composable(route = Screens.ScratchCard.router) {
                 ScratchCardScreen()
+            }
+            composable(route = Screens.StatComparison.router) {
+                StatComparisonScreen()
             }
         }
     }

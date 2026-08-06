@@ -5,5 +5,6 @@ enum class Screens(val router: String) {
     Workout("workout"),
     Basic("basic"),
     ScratchCard("scratch-card"),
+    StatComparison("stat-comparison"),
     Home("home")
 }

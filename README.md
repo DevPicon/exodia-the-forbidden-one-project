@@ -12,7 +12,7 @@ The repository is a technical playground and reference application. Each sample 
 | Doughnut Chart | Animated arcs, measured text, bitmap placement, and an interactive percentage slider | Available |
 | Workout Timer | Countdown-driven Canvas progress and step rendering | Available; behavior corrections tracked in `DRAW-003` |
 | Scratch Card | Gesture-driven paths and `BlendMode.Clear` on an isolated graphics layer | Available |
-| Stat Comparison | Animated proportional lines and a divider | Implemented; catalog navigation tracked in `DRAW-004` |
+| Stat Comparison | Animated proportional lines, a neutral zero state, and interactive value controls | Available |
 
 Delivery status, acceptance criteria, and pending work live exclusively in the [project plan](docs/PROJECT_PLAN.md).
 

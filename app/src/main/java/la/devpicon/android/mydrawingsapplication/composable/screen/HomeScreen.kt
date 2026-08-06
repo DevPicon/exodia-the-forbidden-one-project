@@ -16,56 +16,61 @@ import androidx.compose.ui.unit.dp
 import la.devpicon.android.mydrawingsapplication.R
 import la.devpicon.android.mydrawingsapplication.ui.theme.MyDrawingsApplicationTheme
 
+data class HomeActions(
+    val onOpenBasicDrawing: () -> Unit,
+    val onOpenDoughnutChart: () -> Unit,
+    val onOpenWorkoutTimer: () -> Unit,
+    val onOpenScratchCard: () -> Unit,
+    val onOpenStatComparison: () -> Unit
+)
+
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier,
-    onNavigateToDoughnutChartScreen: () -> Unit,
-    onNavigateToWorkoutPauseScreen: () -> Unit,
-    onNavigateToBasicDrawScreen: () -> Unit,
-    onNavigateToScratchCardScreen: () -> Unit,
+    actions: HomeActions,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        val buttonModifier = modifier
+        val buttonModifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 48.dp)
 
         Button(
-            onClick = onNavigateToBasicDrawScreen,
+            onClick = actions.onOpenBasicDrawing,
             modifier = buttonModifier
         ) {
             Text(stringResource(R.string.label_basic_sample))
         }
 
         Button(
-            onClick = onNavigateToDoughnutChartScreen,
+            onClick = actions.onOpenDoughnutChart,
             modifier = buttonModifier
         ) {
             Text(stringResource(R.string.label_possesion_doughnut_chart))
         }
 
         Button(
-            onClick = onNavigateToWorkoutPauseScreen,
+            onClick = actions.onOpenWorkoutTimer,
             modifier = buttonModifier
         ) {
             Text(stringResource(R.string.label_workout_timer))
         }
 
         Button(
-            onClick = onNavigateToScratchCardScreen,
+            onClick = actions.onOpenScratchCard,
             modifier = buttonModifier
         ) {
             Text(stringResource(R.string.label_scratch_card))
         }
 
         Button(
-            onClick = {},
+            onClick = actions.onOpenStatComparison,
             modifier = buttonModifier
         ) {
-            Text("Linea de comparación")
+            Text(stringResource(R.string.label_stat_comparison))
         }
     }
 }
@@ -75,11 +80,13 @@ fun HomeScreen(
 private fun MenuPreview() {
     MyDrawingsApplicationTheme {
         HomeScreen(
-            onNavigateToDoughnutChartScreen = {},
-            modifier = Modifier,
-            onNavigateToWorkoutPauseScreen = {},
-            onNavigateToBasicDrawScreen = {},
-            onNavigateToScratchCardScreen = {}
+            actions = HomeActions(
+                onOpenBasicDrawing = {},
+                onOpenDoughnutChart = {},
+                onOpenWorkoutTimer = {},
+                onOpenScratchCard = {},
+                onOpenStatComparison = {}
+            )
         )
     }
 }

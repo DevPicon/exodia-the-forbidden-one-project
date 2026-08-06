@@ -7,7 +7,7 @@ This file is the single source of truth for delivery status in **Jetpack Compose
 | ID | Priority | Status | Story | Completion evidence |
 |---|---|---|---|---|
 | PROD-001 | P0 | COMPLETED | Align the product identity and public documentation | `c200507` |
-| DRAW-004 | P0 | READY | Make the stat-comparison sample discoverable | — |
+| DRAW-004 | P0 | IN_PROGRESS | Make the stat-comparison sample discoverable | — |
 | DRAW-005 | P0 | COMPLETED | Add the scratch-card overlay sample | `de7aca4` |
 | DRAW-003 | P1 | READY | Make the workout timer behavior reliable | — |
 | QUALITY-001 | P1 | READY | Enforce build, tests, and lint in CI | — |
@@ -24,7 +24,7 @@ This inventory describes the current repository; it does not override story stat
 | Basic Canvas | Reachable | Focused UI tests and Canvas semantics remain pending. |
 | Doughnut Chart | Reachable and interactive | Fixed sizing and Canvas accessibility require follow-up. |
 | Workout Timer | Reachable and interactive | Pause/resume, lifecycle restoration, and focused tests require correction. |
-| Stat Comparison | Implemented | Not reachable because its Home action is inert. |
+| Stat Comparison | Reachable and interactive | Canvas semantics remain pending. |
 | Scratch Card | Reachable and verified on device | Completed by DRAW-005. |
 
 ## Stories and tasks
@@ -69,7 +69,7 @@ As a developer exploring Jetpack Compose graphics, I want the app and repository
 ### DRAW-004 — Make the stat-comparison sample discoverable
 
 - **Priority:** P0
-- **Status:** READY
+- **Status:** IN_PROGRESS
 
 #### Definition
 

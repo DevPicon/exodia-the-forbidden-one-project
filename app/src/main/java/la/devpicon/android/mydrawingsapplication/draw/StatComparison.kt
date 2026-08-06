@@ -22,24 +22,33 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import la.devpicon.android.mydrawingsapplication.ui.theme.MyDrawingsApplicationTheme
 
+internal fun calculateBlueTeamFraction(
+    blueTeamValue: Int,
+    redTeamValue: Int
+): Float? {
+    require(blueTeamValue >= 0 && redTeamValue >= 0) {
+        "Team values must be non-negative"
+    }
+
+    val totalValue = blueTeamValue.toLong() + redTeamValue.toLong()
+    return if (totalValue == 0L) {
+        null
+    } else {
+        blueTeamValue.toFloat() / totalValue.toFloat()
+    }
+}
+
 @Composable
 fun StatComparison(
     blueTeamValue: Int,
     redTeamValue: Int,
     modifier: Modifier = Modifier
 ) {
+    val dividerColor = if (isSystemInDarkTheme()) Color.White else Color.Gray
+    val blueTeamFraction = calculateBlueTeamFraction(blueTeamValue, redTeamValue)
+    val animationPercentage = remember { AnimationState(0f) }
 
-    val dividerColor = if(isSystemInDarkTheme()){
-        Color.White
-    } else {
-        Color.Gray
-    }
-
-    val animationPercentage = remember {
-        AnimationState(0F)
-    }
-
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(Unit) {
         animationPercentage.animateTo(
             targetValue = 1f,
             animationSpec = tween(
@@ -49,24 +58,44 @@ fun StatComparison(
         )
     }
 
-    Canvas(modifier = modifier
-        .fillMaxWidth()
-        .height(48.dp)
-    ) {
-        val midHeight = size.height.div(2)
-        val totalValue = blueTeamValue + redTeamValue
-        val blueTeamPercentage = blueTeamValue.toFloat() / totalValue
-        val dividingPoint = size.width.times(blueTeamPercentage)
+    Canvas(modifier = modifier) {
+        val midHeight = size.height / 2f
         val lineWidth = 4.dp.toPx()
 
-        // Draw blue line from start to dividing point
-        drawBlueLine(midHeight, dividingPoint, lineWidth, animationPercentage.value)
-        // Draw red line from start to ending point
-        drawRedLine(dividingPoint, midHeight, lineWidth, animationPercentage.value)
-
-        drawDivider(lineWidth, dividingPoint, midHeight, dividerColor)
-
-
+        if (blueTeamFraction == null) {
+            drawLine(
+                color = dividerColor.copy(alpha = 0.4f),
+                start = Offset(0f, midHeight),
+                end = Offset(size.width, midHeight),
+                strokeWidth = lineWidth
+            )
+            drawDivider(
+                lineWidth = lineWidth,
+                dividingPoint = size.width / 2f,
+                midHeight = midHeight,
+                dividerColor = dividerColor
+            )
+        } else {
+            val dividingPoint = size.width * blueTeamFraction
+            drawBlueLine(
+                midHeight = midHeight,
+                dividingPoint = dividingPoint,
+                lineWidth = lineWidth,
+                animationPercentage = animationPercentage.value
+            )
+            drawRedLine(
+                dividingPoint = dividingPoint,
+                midHeight = midHeight,
+                lineWidth = lineWidth,
+                animationPercentage = animationPercentage.value
+            )
+            drawDivider(
+                lineWidth = lineWidth,
+                dividingPoint = dividingPoint,
+                midHeight = midHeight,
+                dividerColor = dividerColor
+            )
+        }
     }
 }
 
@@ -76,8 +105,8 @@ private fun DrawScope.drawDivider(
     midHeight: Float,
     dividerColor: Color
 ) {
-    val dividerOffsetPx = lineWidth.times(2)
-    
+    val dividerOffsetPx = lineWidth * 2f
+
     drawLine(
         color = dividerColor,
         start = Offset(
@@ -98,21 +127,13 @@ private fun DrawScope.drawRedLine(
     lineWidth: Float,
     animationPercentage: Float
 ) {
-
-val totalLength = (size.width - dividingPoint)
-    val lengthToRender = totalLength * animationPercentage
-    val endingX = dividingPoint + lengthToRender
+    val totalLength = size.width - dividingPoint
+    val endingX = dividingPoint + totalLength * animationPercentage
 
     drawLine(
         color = Color.Red,
-        start = Offset(
-            x = dividingPoint,
-            y = midHeight
-        ),
-        end = Offset(
-            x = endingX,
-            y = midHeight
-        ),
+        start = Offset(dividingPoint, midHeight),
+        end = Offset(endingX, midHeight),
         strokeWidth = lineWidth
     )
 }
@@ -123,21 +144,12 @@ private fun DrawScope.drawBlueLine(
     lineWidth: Float,
     animationPercentage: Float
 ) {
-
-    val totalLength = dividingPoint
-    val lineLengthToRender = animationPercentage * totalLength
-    val startingX = (dividingPoint - lineLengthToRender)
+    val startingX = dividingPoint - dividingPoint * animationPercentage
 
     drawLine(
         color = Color.Blue,
-        start = Offset(
-            x = startingX,
-            y = midHeight
-        ),
-        end = Offset(
-            x = dividingPoint,
-            y = midHeight
-        ),
+        start = Offset(startingX, midHeight),
+        end = Offset(dividingPoint, midHeight),
         strokeWidth = lineWidth
     )
 }
@@ -159,6 +171,8 @@ private fun StatComparisonPreview() {
                 redTeamValue = 23,
                 modifier = Modifier
                     .padding(16.dp)
+                    .fillMaxWidth()
+                    .height(48.dp)
             )
         }
     }
