@@ -9,7 +9,7 @@ This file is the single source of truth for delivery status in **Jetpack Compose
 | PROD-001 | P0 | COMPLETED | Align the product identity and public documentation | `c200507` |
 | DRAW-004 | P0 | COMPLETED | Make the stat-comparison sample discoverable | `c6321c6` |
 | DRAW-005 | P0 | COMPLETED | Add the scratch-card overlay sample | `de7aca4` |
-| DRAW-003 | P1 | IN_PROGRESS | Make the workout timer behavior reliable | — |
+| DRAW-003 | P1 | COMPLETED | Make the workout timer behavior reliable | `0dd4d0f` |
 | QUALITY-001 | P1 | READY | Enforce build, tests, and lint in CI | — |
 | UX-001 | P1 | BACKLOG | Make samples adaptive across screen configurations | — |
 | A11Y-001 | P1 | BACKLOG | Add meaningful semantics to Canvas samples | — |
@@ -133,7 +133,8 @@ As a developer learning Jetpack Compose custom drawing, I want a scratch-card sa
 ### DRAW-003 — Make the workout timer behavior reliable
 
 - **Priority:** P1
-- **Status:** IN_PROGRESS
+- **Status:** COMPLETED
+- **Implementation commit:** `0dd4d0f`
 
 #### Definition
 
@@ -161,6 +162,16 @@ As a developer studying time-based Compose drawing, I want the timer sample to i
 3. Reset during active and paused states.
 4. Recreate the screen and verify state restoration.
 5. Exercise minimum steps and duration inputs.
+
+#### Completion evidence
+
+- A saveable, testable state holder uses monotonic elapsed time and preserves active or paused state.
+- Pause, resume, reset, multi-step completion, restoration, and minimum boundaries are deterministic.
+- All 11 unit tests passed, including six focused `WorkoutTimerState` tests.
+- All 12 instrumented tests passed on the Android 16 `Medium_Phone_API_36.1` emulator, including four focused timer tests.
+- `lintDebug`, `assembleDebug`, and Android-test compilation passed.
+- A later optional `installDebug` attempt was blocked by insufficient AVD storage; connected test execution had already passed.
+- The implementation and tests were committed in `0dd4d0f`.
 
 ### QUALITY-001 — Enforce build, tests, and lint in CI
 
@@ -260,3 +271,4 @@ As a maintainer, I want dependencies, SDK configuration, and resources to remain
 | 2026-08-06 | DRAW-005 | `de7aca4` | Recorded during governance consolidation. |
 | 2026-08-06 | PROD-001 | `c200507` | Product identity and public documentation aligned. |
 | 2026-08-06 | DRAW-004 | `c6321c6` | Stat-comparison sample verified and made discoverable. |
+| 2026-08-06 | DRAW-003 | `0dd4d0f` | Workout timer behavior and restoration verified. |
