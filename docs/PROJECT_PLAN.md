@@ -12,6 +12,7 @@ This file is the single source of truth for delivery status in **Jetpack Compose
 | DRAW-003 | P1 | COMPLETED | Make the workout timer behavior reliable | `0dd4d0f` |
 | QUALITY-002 | P1 | COMPLETED | Enforce local Kotlin quality checks before commit | `8f6941b` |
 | QUALITY-001 | P1 | IN_PROGRESS | Enforce verified, versioned Android artifacts in CI | — |
+| ICON-001 | P1 | IN_PROGRESS | Replace the generic launcher icon with the selected layered-canvas identity | — |
 | UX-001 | P1 | BACKLOG | Make samples adaptive across screen configurations | — |
 | A11Y-001 | P1 | BACKLOG | Add meaningful semantics to Canvas samples | — |
 | MAINT-001 | P2 | BACKLOG | Modernize tooling and remove obsolete resources | — |
@@ -252,6 +253,39 @@ As a maintainer, I want every proposed change to compile and run automated quali
 3. Pass invalid build-number values and verify Gradle rejects them.
 4. Validate the workflow syntax and event/upload conditions.
 5. Push the committed workflow to `stable`, wait for GitHub Actions, and verify the named APK artifact is available after all checks pass.
+
+### ICON-001 — Replace the generic launcher icon with the selected layered-canvas identity
+
+- **Priority:** P1
+- **Status:** IN_PROGRESS
+
+#### Definition
+
+As a developer using the sample gallery, I want a distinctive launcher icon based on layered drawing primitives so that the app is recognizable as a Jetpack Compose custom-drawing laboratory rather than a generic Android template.
+
+#### Scope
+
+- Use the selected third concept as the visual direction: overlapping canvas layers with an arc, stroke, circle, and violet intersection.
+- Reconstruct the mark as deterministic project-owned vector artwork rather than shipping the generated concept bitmap directly.
+- Replace adaptive foreground/background resources and add a dedicated monochrome drawable.
+- Regenerate legacy square and round launcher assets for every existing density bucket.
+- Preserve the current application ID and launcher resource names.
+
+#### Acceptance criteria
+
+- The icon remains legible and uncropped under square, circle, rounded-square, and adaptive masks.
+- Android 13 themed icons use a coherent monochrome silhouette.
+- Legacy launchers receive density-appropriate square and round resources.
+- No generated launcher bitmap contains text, third-party marks, or the Android robot.
+- The debug APK builds successfully and packages the new resources.
+- The icon is visually verified on an emulator or authorized device before completion.
+
+#### Test cases
+
+1. Render adaptive square, circle, and monochrome previews and inspect their safe zones.
+2. Inspect the dimensions and formats of every legacy density asset.
+3. Build the debug APK and confirm the launcher references resolve.
+4. Install the APK and verify the launcher icon and app label on a device or emulator.
 
 ### UX-001 — Make samples adaptive across screen configurations
 
