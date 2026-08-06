@@ -10,7 +10,7 @@ This file is the single source of truth for delivery status in **Jetpack Compose
 | DRAW-004 | P0 | COMPLETED | Make the stat-comparison sample discoverable | `c6321c6` |
 | DRAW-005 | P0 | COMPLETED | Add the scratch-card overlay sample | `de7aca4` |
 | DRAW-003 | P1 | COMPLETED | Make the workout timer behavior reliable | `0dd4d0f` |
-| QUALITY-002 | P1 | IN_PROGRESS | Enforce local Kotlin quality checks before commit | — |
+| QUALITY-002 | P1 | COMPLETED | Enforce local Kotlin quality checks before commit | `8f6941b` |
 | QUALITY-001 | P1 | READY | Enforce build, tests, and lint in CI | — |
 | UX-001 | P1 | BACKLOG | Make samples adaptive across screen configurations | — |
 | A11Y-001 | P1 | BACKLOG | Add meaningful semantics to Canvas samples | — |
@@ -177,7 +177,7 @@ As a developer studying time-based Compose drawing, I want the timer sample to i
 ### QUALITY-002 — Enforce local Kotlin quality checks before commit
 
 - **Priority:** P1
-- **Status:** IN_PROGRESS
+- **Status:** COMPLETED
 
 #### Definition
 
@@ -206,6 +206,15 @@ As a contributor, I want Detekt and ktlint to run through a versioned Lefthook p
 3. Run the pre-commit hook against the current repository.
 4. Introduce a temporary violation, verify rejection, and remove the probe.
 5. Run the default project verification set after integrating the plugins.
+
+#### Completion evidence
+
+- Detekt 1.23.8 and the ktlint Gradle plugin 14.2.0 expose reproducible project tasks with explicit baselines for pre-existing debt.
+- `@Composable` functions may use PascalCase in both analyzers; `@Preview` functions are excluded from Detekt's unused-private and preview-count checks without baseline suppressions.
+- Lefthook 2.1.10 was installed locally and its generated `pre-commit` entry delegates to the versioned `lefthook.yml` configuration.
+- The hook rejected a staged `invalid_function_name` probe with exit status 1, then passed against the staged implementation without modifying files.
+- Unit tests, Android lint, debug assembly, Android-test compilation, Detekt, and ktlint all passed together.
+- The implementation and verification configuration were committed in `8f6941b`.
 
 ### QUALITY-001 — Enforce build, tests, and lint in CI
 
@@ -306,3 +315,4 @@ As a maintainer, I want dependencies, SDK configuration, and resources to remain
 | 2026-08-06 | PROD-001 | `c200507` | Product identity and public documentation aligned. |
 | 2026-08-06 | DRAW-004 | `c6321c6` | Stat-comparison sample verified and made discoverable. |
 | 2026-08-06 | DRAW-003 | `0dd4d0f` | Workout timer behavior and restoration verified. |
+| 2026-08-06 | QUALITY-002 | `8f6941b` | Local Detekt and ktlint enforcement installed through Lefthook. |
