@@ -3,6 +3,11 @@
     <string name="label_basic_sample">Basic drawing</string>
     <string name="label_possesion_doughnut_chart">Doughtnut chart - Ball possesion</string>
     <string name="label_workout_timer">Workout timer</string>
+    <string name="workout_timer_start">Start timer</string>
+    <string name="workout_timer_pause">Pause timer</string>
+    <string name="workout_timer_reset">Reset workout</string>
+    <string name="workout_timer_complete">Workout complete</string>
+    <string name="workout_timer_step_progress">Step %1$d of %2$d</string>
     <string name="label_scratch_card">Scratch card</string>
     <string name="scratch_card_instruction">Scratch the silver layer to reveal the hidden content</string>
     <string name="scratch_card_prize">🎉 YOU WON A PRIZE! 🎉</string>

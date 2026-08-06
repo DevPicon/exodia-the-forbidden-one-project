@@ -9,7 +9,7 @@ This file is the single source of truth for delivery status in **Jetpack Compose
 | PROD-001 | P0 | COMPLETED | Align the product identity and public documentation | `c200507` |
 | DRAW-004 | P0 | COMPLETED | Make the stat-comparison sample discoverable | `c6321c6` |
 | DRAW-005 | P0 | COMPLETED | Add the scratch-card overlay sample | `de7aca4` |
-| DRAW-003 | P1 | READY | Make the workout timer behavior reliable | — |
+| DRAW-003 | P1 | IN_PROGRESS | Make the workout timer behavior reliable | — |
 | QUALITY-001 | P1 | READY | Enforce build, tests, and lint in CI | — |
 | UX-001 | P1 | BACKLOG | Make samples adaptive across screen configurations | — |
 | A11Y-001 | P1 | BACKLOG | Add meaningful semantics to Canvas samples | — |
@@ -23,7 +23,7 @@ This inventory describes the current repository; it does not override story stat
 |---|---|---|
 | Basic Canvas | Reachable | Focused UI tests and Canvas semantics remain pending. |
 | Doughnut Chart | Reachable and interactive | Fixed sizing and Canvas accessibility require follow-up. |
-| Workout Timer | Reachable and interactive | Pause/resume, lifecycle restoration, and focused tests require correction. |
+| Workout Timer | Reachable, interactive, and lifecycle-safe | Canvas semantics remain pending. |
 | Stat Comparison | Reachable and interactive | Canvas semantics remain pending. |
 | Scratch Card | Reachable and verified on device | Completed by DRAW-005. |
 
@@ -133,7 +133,7 @@ As a developer learning Jetpack Compose custom drawing, I want a scratch-card sa
 ### DRAW-003 — Make the workout timer behavior reliable
 
 - **Priority:** P1
-- **Status:** READY
+- **Status:** IN_PROGRESS
 
 #### Definition
 

@@ -1,6 +1,7 @@
 package la.devpicon.android.mydrawingsapplication.draw
 
 import android.content.res.Configuration
+import android.os.SystemClock
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,18 +14,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.SolidColor
@@ -32,323 +32,319 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import la.devpicon.android.mydrawingsapplication.R
 import la.devpicon.android.mydrawingsapplication.ui.theme.MyDrawingsApplicationTheme
+import java.util.Locale
+
+internal const val WORKOUT_TIMER_TEXT_TEST_TAG = "workoutTimerText"
+internal const val WORKOUT_TIMER_TOGGLE_TEST_TAG = "workoutTimerToggle"
+internal const val WORKOUT_TIMER_RESET_TEST_TAG = "workoutTimerReset"
+internal const val WORKOUT_TIMER_STEPS_TEST_TAG = "workoutTimerSteps"
+
+internal data class WorkoutTimerUiState(
+    val isRunning: Boolean,
+    val remainingSeconds: Int,
+    val totalSteps: Int,
+    val completedSteps: Int,
+    val stepProgress: Float,
+    val isComplete: Boolean
+)
 
 @Composable
 fun WorkoutPauseTimer(
     modifier: Modifier = Modifier,
     numberOfSteps: Int = 5,
     timeInSeconds: Int = 30,
+    timeSource: () -> Long = SystemClock::elapsedRealtime
 ) {
+    require(numberOfSteps >= 1) { "Number of steps must be at least one" }
+    require(timeInSeconds > 0) { "Time in seconds must be positive" }
 
-    var animationProgress by remember {
-        mutableFloatStateOf(0f)
-    }
+    val timerState = rememberWorkoutTimerState(
+        totalSteps = numberOfSteps,
+        stepDurationMillis = timeInSeconds.toLong() * 1_000L
+    )
+    val latestTimeSource by rememberUpdatedState(timeSource)
 
-    var workoutPauseState by remember {
-        mutableStateOf(
-            WorkoutPauseState(
-                timeLeft = timeInSeconds
-            )
-        )
-    }
-
-    LaunchedEffect(key1 = workoutPauseState.isPlaying) {
-        if (workoutPauseState.isPlaying) {
-
-            val startTimeInMillis = System.currentTimeMillis()
-
-            while (workoutPauseState.timeLeft > 0) {
-                delay(1000L)
-                
-                val elapsedTimeInSeconds = (System.currentTimeMillis() - startTimeInMillis) / 1000
-                val progress = elapsedTimeInSeconds / timeInSeconds.toFloat()
-
-                workoutPauseState = workoutPauseState.copy(
-                    timeLeft = workoutPauseState.timeLeft - 1
-                )
-                animationProgress = progress.coerceIn(0f, 1f)
-            }
-
-            workoutPauseState = workoutPauseState.copy(
-                isPlaying = false,
-                timeLeft = timeInSeconds,
-                completedBreaks = workoutPauseState.completedBreaks + 1
-            )
-            animationProgress = 0f
+    LaunchedEffect(timerState, timerState.isRunning) {
+        while (timerState.isRunning) {
+            delay(TIMER_REFRESH_INTERVAL_MILLIS)
+            timerState.tick(latestTimeSource())
         }
     }
 
-    LaunchedEffect(workoutPauseState.completedBreaks) {
-        if(workoutPauseState.completedBreaks == numberOfSteps - 1){
-            workoutPauseState = WorkoutPauseState.DEFAULT.copy(
-                timeLeft = timeInSeconds
-            )
-        }
-    }
+    WorkoutTimerContent(
+        state = WorkoutTimerUiState(
+            isRunning = timerState.isRunning,
+            remainingSeconds = timerState.remainingSeconds,
+            totalSteps = timerState.totalSteps,
+            completedSteps = timerState.completedSteps,
+            stepProgress = timerState.stepProgress,
+            isComplete = timerState.isComplete
+        ),
+        onToggleRunning = { timerState.toggle(latestTimeSource()) },
+        onReset = timerState::reset,
+        modifier = modifier
+    )
+}
 
+@Composable
+internal fun WorkoutTimerContent(
+    state: WorkoutTimerUiState,
+    onToggleRunning: () -> Unit,
+    onReset: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Row(
-            modifier = modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            CountdownTimer(timeLeftInSeconds = state.remainingSeconds)
 
-            CountdownTimer(
-                modifier = modifier,
-                timeLeftInSeconds = workoutPauseState.timeLeft
-            )
-
-            IconButton(onClick = {
-                workoutPauseState = WorkoutPauseState.DEFAULT.copy(
-                    timeLeft = timeInSeconds
-                )
-            }) {
+            IconButton(
+                onClick = onReset,
+                modifier = Modifier.testTag(WORKOUT_TIMER_RESET_TEST_TAG)
+            ) {
                 Icon(
                     imageVector = Icons.Default.Clear,
-                    contentDescription = "Reset everything button"
+                    contentDescription = stringResource(R.string.workout_timer_reset)
                 )
             }
 
-            PlayStopButton(
-                modifier = modifier,
-                isPlaying = workoutPauseState.isPlaying,
-                onPlayStop = {
-                    workoutPauseState = if (workoutPauseState.isPlaying) {
-                        workoutPauseState.copy(
-                            isPlaying = false,
-                            timeLeft = timeInSeconds,
-                            currentBreak = workoutPauseState.currentBreak - 1
-                        )
-
-                    } else {
-                        workoutPauseState.copy(
-                            isPlaying = true,
-                            currentBreak = workoutPauseState.currentBreak + 1,
-                            isCollapsed = false
-                        )
-                    }
-                }
+            PlayPauseButton(
+                isRunning = state.isRunning,
+                onToggleRunning = onToggleRunning,
+                modifier = Modifier.testTag(WORKOUT_TIMER_TOGGLE_TEST_TAG)
             )
         }
 
-        if(workoutPauseState.isCollapsed.not()){
-            Steps(
-                modifier = modifier,
-                numberOfSteps = numberOfSteps,
-                currentBreak = workoutPauseState.currentBreak,
-                isPlaying = workoutPauseState.isPlaying,
-                completedBreaks = workoutPauseState.completedBreaks,
-                animationProgress = animationProgress
-            )
-        }
-    }
+        WorkoutSteps(
+            numberOfSteps = state.totalSteps,
+            completedSteps = state.completedSteps,
+            isRunning = state.isRunning,
+            stepProgress = state.stepProgress,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .testTag(WORKOUT_TIMER_STEPS_TEST_TAG)
+        )
 
-}
-
-@Composable
-fun Steps(
-    modifier: Modifier,
-    numberOfSteps: Int,
-    currentBreak: Int,
-    isPlaying: Boolean,
-    completedBreaks: Int,
-    animationProgress: Float,
-) {
-    val textMeasurer = rememberTextMeasurer()
-    val radius = 16f.dp
-    val colorGray = Color(0xFFE5E5E5)
-    val colorMain = Color(0xFF55CEFF)
-
-    Canvas(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(75.dp)
-    ) {
-
-        val radiusInPx = radius.toPx()
-        val y = size.height - radiusInPx
-        val totalWidth = size.width
-        val stepWidth = (totalWidth - 2 * radiusInPx) / (numberOfSteps - 1)
-
-        val centers = List(numberOfSteps) { index: Int ->
-            val x = radiusInPx + index * stepWidth
-            Offset(
-                x = x,
-                y = y
-            )
-        }
-
-        centers.forEachIndexed { index, offset ->
-            if(currentBreak > index){
-                drawCircle(
-                    color = colorMain,
-                    radius = radiusInPx,
-                    center = offset
-                )
-
-                drawPath(
-                    path = Path().apply {
-                        moveTo(offset.x - 16, offset.y)
-                        relativeMoveTo(-8f, -4f)
-                        relativeLineTo(16f, 16f)
-                        relativeLineTo(24f, -24f)
-                    },
-                    brush = SolidColor(Color.Black),
-                    style = Stroke(width = 2.dp.toPx())
-                )
+        Text(
+            text = if (state.isComplete) {
+                stringResource(R.string.workout_timer_complete)
             } else {
-                // Gray circles
-                drawCircle(
-                    color = colorGray,
-                    radius = radiusInPx,
-                    center = offset
+                stringResource(
+                    R.string.workout_timer_step_progress,
+                    (state.completedSteps + 1).coerceAtMost(state.totalSteps),
+                    state.totalSteps
                 )
-
-                drawNumberInCircles(index, textMeasurer, offset)
-            }
-        }
-
-        // Draw lines between circles
-        for (i in 0 until numberOfSteps - 1) {
-            val startX = centers[i].x + radiusInPx + 2f
-            val endX = centers[i + 1].x - radiusInPx - 2f
-            drawLine(
-                color = colorGray,
-                start = Offset(startX, y),
-                end = Offset(endX, y),
-                strokeWidth = 14f
-            )
-        }
-
-        for(i in 0 until completedBreaks){
-            val startX = centers[i].x + radiusInPx + 2f
-            val endX = centers[i + 1].x - radiusInPx - 2f
-            drawLine(
-                color = colorMain,
-                start = Offset(startX, y),
-                end = Offset(endX, y),
-                strokeWidth = 8f
-            )
-        }
-
-        if(isPlaying){
-            val startFillingX = centers[currentBreak - 1].x + radiusInPx + 2f
-            val endFillingX = centers[currentBreak].x - radiusInPx - 2f
-            val length = endFillingX - startFillingX
-            val animatedEndX = startFillingX + length.times(animationProgress)
-            drawLine(
-                color = colorMain,
-                start = Offset(startFillingX, y),
-                end = Offset(animatedEndX, y),
-                strokeWidth = 8f
-            )
-        }
-
-    }
-}
-
-private fun DrawScope.drawNumberInCircles(
-    index: Int,
-    textMeasurer: TextMeasurer,
-    offset: Offset
-) {
-    val stepNumberText = "${index + 1}"
-    val style = TextStyle(
-        color = Color.Black,
-        fontWeight = FontWeight.Bold
-    )
-    val layoutResult = textMeasurer.measure(
-        text = stepNumberText,
-        style = style
-    )
-
-    drawText(
-        text = stepNumberText,
-        textMeasurer = textMeasurer,
-        topLeft = Offset(
-            x = offset.x - layoutResult.size.width / 2,
-            y = offset.y - layoutResult.size.height / 2
-        ),
-        style = style
-    )
-}
-
-@Composable
-fun PlayStopButton(
-    modifier: Modifier,
-    isPlaying: Boolean,
-    onPlayStop: () -> Unit
-) {
-    val playIcon = painterResource(R.drawable.baseline_play_circle_24)
-    val stopIcon = painterResource(R.drawable.baseline_stop_circle_24)
-
-    IconButton(onClick = onPlayStop) {
-        Icon(
-            painter = if (isPlaying) stopIcon else playIcon,
-            contentDescription = if (isPlaying) "Stop timer" else "Start timer",
-            modifier = modifier.size(48.dp)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyMedium
         )
     }
-
 }
 
 @Composable
-fun CountdownTimer(
-    modifier: Modifier,
-    timeLeftInSeconds: Int
+internal fun WorkoutSteps(
+    numberOfSteps: Int,
+    completedSteps: Int,
+    isRunning: Boolean,
+    stepProgress: Float,
+    modifier: Modifier = Modifier
 ) {
-    Text(
-        text = String.format("%02d:%02d", timeLeftInSeconds / 60, timeLeftInSeconds % 60),
-        style = TextStyle(
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        ),
-        modifier = modifier.testTag("textTimer")
-    )
-}
+    require(numberOfSteps >= 1) { "Number of steps must be at least one" }
+    require(completedSteps in 0..numberOfSteps) {
+        "Completed steps must be within the workout range"
+    }
 
-data class WorkoutPauseState(
-    val isPlaying: Boolean = false,
-    val timeLeft: Int = 45,
-    val currentBreak: Int = 0,
-    val completedBreaks: Int = 0,
-    val isCollapsed: Boolean = true
-) {
-    companion object {
-        val DEFAULT = WorkoutPauseState()
+    val textMeasurer = rememberTextMeasurer()
+    val inactiveColor = Color(0xFFE5E5E5)
+    val activeColor = Color(0xFF55CEFF)
+
+    Canvas(modifier = modifier) {
+        val desiredRadius = 16.dp.toPx()
+        val radius = minOf(desiredRadius, size.width / (numberOfSteps * 2f))
+        val centerY = size.height - radius
+        val availableWidth = (size.width - radius * 2f).coerceAtLeast(0f)
+        val stepWidth = if (numberOfSteps == 1) 0f else availableWidth / (numberOfSteps - 1)
+        val centers = List(numberOfSteps) { index ->
+            Offset(
+                x = if (numberOfSteps == 1) size.width / 2f else radius + index * stepWidth,
+                y = centerY
+            )
+        }
+
+        drawStepConnections(
+            centers = centers,
+            radius = radius,
+            completedSteps = completedSteps,
+            inactiveColor = inactiveColor,
+            activeColor = activeColor
+        )
+
+        centers.forEachIndexed { index, center ->
+            val isCompleted = index < completedSteps
+            drawCircle(
+                color = if (isCompleted) activeColor else inactiveColor,
+                radius = radius,
+                center = center
+            )
+
+            if (isCompleted) {
+                drawCheckmark(center = center, radius = radius)
+            } else {
+                drawNumberInCircle(index = index, textMeasurer = textMeasurer, center = center)
+            }
+        }
+
+        if (isRunning && completedSteps < numberOfSteps) {
+            val center = centers[completedSteps]
+            val strokeWidth = 3.dp.toPx()
+            drawArc(
+                color = activeColor,
+                startAngle = -90f,
+                sweepAngle = 360f * stepProgress.coerceIn(0f, 1f),
+                useCenter = false,
+                topLeft = Offset(center.x - radius, center.y - radius),
+                size = Size(radius * 2f, radius * 2f),
+                style = Stroke(width = strokeWidth)
+            )
+        }
     }
 }
 
+private fun DrawScope.drawStepConnections(
+    centers: List<Offset>,
+    radius: Float,
+    completedSteps: Int,
+    inactiveColor: Color,
+    activeColor: Color
+) {
+    centers.zipWithNext().forEachIndexed { index, (start, end) ->
+        val startOffset = Offset(start.x + radius + 2f, start.y)
+        val endOffset = Offset(end.x - radius - 2f, end.y)
+        drawLine(
+            color = if (index < completedSteps - 1) activeColor else inactiveColor,
+            start = startOffset,
+            end = endOffset,
+            strokeWidth = if (index < completedSteps - 1) 8f else 14f
+        )
+    }
+}
 
-@Preview(
-    name = "Night Mode",
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Preview(
-    name = "Day Mode",
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
+private fun DrawScope.drawCheckmark(center: Offset, radius: Float) {
+    drawPath(
+        path = Path().apply {
+            moveTo(center.x - radius * 0.5f, center.y)
+            lineTo(center.x - radius * 0.1f, center.y + radius * 0.4f)
+            lineTo(center.x + radius * 0.6f, center.y - radius * 0.45f)
+        },
+        brush = SolidColor(Color.Black),
+        style = Stroke(width = 2.dp.toPx())
+    )
+}
+
+private fun DrawScope.drawNumberInCircle(
+    index: Int,
+    textMeasurer: TextMeasurer,
+    center: Offset
+) {
+    val text = (index + 1).toString()
+    val style = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold)
+    val layoutResult = textMeasurer.measure(text = text, style = style)
+
+    drawText(
+        text = text,
+        textMeasurer = textMeasurer,
+        topLeft = Offset(
+            x = center.x - layoutResult.size.width / 2f,
+            y = center.y - layoutResult.size.height / 2f
+        ),
+        style = style
+    )
+}
+
+@Composable
+private fun PlayPauseButton(
+    isRunning: Boolean,
+    onToggleRunning: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val icon = painterResource(
+        if (isRunning) R.drawable.baseline_stop_circle_24
+        else R.drawable.baseline_play_circle_24
+    )
+    val description = stringResource(
+        if (isRunning) R.string.workout_timer_pause
+        else R.string.workout_timer_start
+    )
+
+    IconButton(onClick = onToggleRunning, modifier = modifier) {
+        Icon(
+            painter = icon,
+            contentDescription = description,
+            modifier = Modifier.size(48.dp)
+        )
+    }
+}
+
+@Composable
+private fun CountdownTimer(
+    timeLeftInSeconds: Int,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = String.format(
+            Locale.ROOT,
+            "%02d:%02d",
+            timeLeftInSeconds / 60,
+            timeLeftInSeconds % 60
+        ),
+        style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
+        modifier = modifier.testTag(WORKOUT_TIMER_TEXT_TEST_TAG)
+    )
+}
+
+@Preview(name = "Night Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Day Mode", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun WorkoutPauseTimerPreview() {
     MyDrawingsApplicationTheme {
         Surface {
-            WorkoutPauseTimer()
+            WorkoutTimerContent(
+                state = WorkoutTimerUiState(
+                    isRunning = true,
+                    remainingSeconds = 18,
+                    totalSteps = 5,
+                    completedSteps = 2,
+                    stepProgress = 0.4f,
+                    isComplete = false
+                ),
+                onToggleRunning = {},
+                onReset = {}
+            )
         }
     }
 }
+
+private const val TIMER_REFRESH_INTERVAL_MILLIS = 100L

@@ -10,7 +10,7 @@ The repository is a technical playground and reference application. Each sample 
 |---|---|---|
 | Basic Canvas | `Canvas`, `drawRect`, and `drawText` with a fixed shape and label | Available |
 | Doughnut Chart | Animated arcs, measured text, bitmap placement, and an interactive percentage slider | Available |
-| Workout Timer | Countdown-driven Canvas progress and step rendering | Available; behavior corrections tracked in `DRAW-003` |
+| Workout Timer | Lifecycle-safe countdown state with pause, resume, reset, and Canvas step progress | Available |
 | Scratch Card | Gesture-driven paths and `BlendMode.Clear` on an isolated graphics layer | Available |
 | Stat Comparison | Animated proportional lines, a neutral zero state, and interactive value controls | Available |
 

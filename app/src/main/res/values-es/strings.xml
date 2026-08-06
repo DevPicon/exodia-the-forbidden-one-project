@@ -4,6 +4,11 @@
     <string name="label_basic_sample">Ejemplo básico</string>
     <string name="label_possesion_doughnut_chart">Gráfico de posesión en Android</string>
     <string name="label_workout_timer">Temporizador interactivo</string>
+    <string name="workout_timer_start">Iniciar temporizador</string>
+    <string name="workout_timer_pause">Pausar temporizador</string>
+    <string name="workout_timer_reset">Reiniciar entrenamiento</string>
+    <string name="workout_timer_complete">Entrenamiento completado</string>
+    <string name="workout_timer_step_progress">Paso %1$d de %2$d</string>
     <string name="label_scratch_card">Raspa y gana</string>
     <string name="scratch_card_instruction">Raspa la capa plateada para revelar el contenido oculto</string>
     <string name="scratch_card_prize">🎉 ¡GANASTE UN PREMIO! 🎉</string>

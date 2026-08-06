@@ -24,7 +24,7 @@ fun WorkoutTimerScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun WorkoutPauseTimerScreenPreview() {
     MyDrawingsApplicationTheme {
-        Surface() {
+        Surface {
             WorkoutTimerScreen()
         }
     }
